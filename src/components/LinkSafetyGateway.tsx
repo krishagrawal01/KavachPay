@@ -16,8 +16,7 @@ import {
 import type { ParsedUPI, TelemetryState } from '@/lib/types';
 import { parseUPI, formatAmount } from '@/lib/upi';
 import { assessRisk } from '@/lib/risk';
-import { analyzeTruthTrace } from '@/lib/truthTrace';
-import { TruthTraceCompact } from '@/components/TruthTraceLab';
+import { analyzeTruthTrace, screenMessage, type TraceInput } from '@/lib/truthTrace';
 import {
   analyzePaymentWithML,
   type MLAnalysisResult,
@@ -60,6 +59,7 @@ interface AnalysisResult {
 interface Props {
   telemetry: TelemetryState;
   initialInput?: string;
+  onViewInvestigation?: (input: TraceInput) => void;
 }
 
 const URL_PATTERN = /(?:https?:\/\/[^\s<>"'`]+|upi:\/\/pay\?[^\s<>"'`]+)/gi;
@@ -389,7 +389,7 @@ function resultTitle(result: AnalysisResult): string {
   return 'Some warning signs found';
 }
 
-export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
+export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestigation }: Props) {
   const [input, setInput] = useState(initialInput);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState('');
@@ -473,7 +473,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
     if (!result?.payment || input.trim() !== lastCheckedTextRef.current) return;
     // Client-side intent firewall is additional to, never a substitute for, ML policy.
     const intentCheck = analyzeTruthTrace({ message: input, paymentUri: result.payment.raw, expectedPayee });
-    if (intentCheck.blockHandoff) return;
+    if (intentCheck.blockHandoff || screenMessage(input).status === 'HIGH_CONCERN') return;
 
     const payment = result.payment;
     const useLocalFallback = Boolean(
@@ -527,26 +527,29 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
     window.speechSynthesis.speak(speech);
   }
 
+  const smsCheck = result ? screenMessage(input) : null;
+  const smsRequiresReview = smsCheck?.status === 'HIGH_CONCERN';
   const intentTrace = result?.payment
     ? analyzeTruthTrace({ message: input, paymentUri: result.payment.raw, expectedPayee })
     : null;
   const firewallBlocked = Boolean(intentTrace?.blockHandoff);
-  const canContinue = Boolean(result?.handoffAllowed && result.payment && !firewallBlocked);
+  const canContinue = Boolean(result?.handoffAllowed && result.payment && !firewallBlocked && !smsRequiresReview);
   const canUseLocalFallback = Boolean(
     result?.apiError &&
     !result.ml &&
     result.localFallbackAllowed &&
     result.payment &&
-    !firewallBlocked
+    !firewallBlocked &&
+    !smsRequiresReview
   );
 
   return (
     <div className="space-y-4">
       <header className="mb-1">
         <p className="text-xs font-bold uppercase tracking-[0.12em] text-brand-blue">Payment protection</p>
-        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-ink-primary">Check a link</h1>
+        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-ink-primary">Check a message or link</h1>
         <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-          Paste a message or payment link. Kavach will look for warning signs before you continue.
+          Paste one SMS, link or UPI request here. Get quick warning signs, then open TruthTrace only when you want the full payment-evidence report.
         </p>
       </header>
 
@@ -582,7 +585,6 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
           </button>
         </div>
         {error && <p role="alert" className="text-sm text-crimson-fraud">{error}</p>}
-
         <details className="group border-t border-border pt-3">
           <summary
             className="flex cursor-pointer list-none items-center justify-between gap-3 py-1 text-sm font-semibold text-ink-muted"
@@ -641,7 +643,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
 
       {result && (
         <div className="space-y-3">
-          <section className={`rounded-3xl border p-4 shadow-card sm:p-5 ${firewallBlocked ? 'border-red-200 bg-red-50 text-red-800' : resultStyle(result.level)}`}>
+          <section className={`rounded-3xl border p-4 shadow-card sm:p-5 ${firewallBlocked ? 'border-red-200 bg-red-50 text-red-800' : smsRequiresReview ? 'border-amber-200 bg-amber-50 text-amber-900' : resultStyle(result.level)}`}>
             <div className="flex items-start gap-3">
               <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/75">
                 {firewallBlocked || result.decision === 'BLOCK' || result.level === 'HIGH' || result.level === 'CRITICAL' ? (
@@ -653,10 +655,12 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-base font-extrabold leading-snug">{firewallBlocked ? 'Payment contradiction — handoff blocked' : resultTitle(result)}</p>
+                <p className="text-base font-extrabold leading-snug">{firewallBlocked ? 'Payment contradiction — handoff blocked' : smsRequiresReview ? 'Concerning message instructions — review required' : resultTitle(result)}</p>
                 <p className="mt-1 text-sm leading-relaxed opacity-90">
                   {firewallBlocked
                     ? 'The payment intent conflicts with the supplied message or trusted recipient reference. Review the TruthTrace evidence below.'
+                    : smsRequiresReview
+                      ? 'This message contains instructions associated with scams. Do not act on the request before independent verification; payment handoff is disabled.'
                     : result.decision === 'BLOCK'
                     ? 'Do not continue with this payment. Review the reasons below.'
                     : result.decision === 'WARN'
@@ -664,7 +668,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
                       : result.level === 'UNVERIFIED'
                         ? 'We could not verify the destination. A low local score does not mean the link is safe.'
                         : result.level === 'LOW'
-                          ? 'No major warning signs were found in the information available.'
+                          ? 'No major payment indicators were found in available evidence. Review SMS warnings separately below.'
                           : 'Review the flagged details before deciding what to do next.'}
                 </p>
               </div>
@@ -686,6 +690,41 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
               {firewallBlocked && <span className="rounded-full bg-red-100 px-3 py-1.5 text-xs font-bold text-red-800">TruthTrace: STOP</span>}
             </div>
           </section>
+
+          {smsCheck && input.trim() && (
+            <section aria-label="Message warning signs" className="rounded-2xl border border-amber-200 bg-white p-4 shadow-card">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-sm font-extrabold text-slate-900">SMS warning signs</h2>
+                <span className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${smsCheck.status === 'HIGH_CONCERN' ? 'bg-rose-100 text-rose-800' : smsCheck.status === 'CAUTION' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>
+                  {smsCheck.status === 'HIGH_CONCERN' ? 'CONCERNING TEXT' : smsCheck.status === 'CAUTION' ? 'REVIEW TEXT' : 'NOT VERIFIED'}
+                </span>
+              </div>
+              {smsCheck.indicators.length ? (
+                <div className="mt-2 space-y-2">
+                  {smsCheck.indicators.slice(0, 3).map(item => (
+                    <p key={item.id} className="text-xs leading-relaxed text-slate-700"><strong>{item.title}:</strong> {item.detail}</p>
+                  ))}
+                </div>
+              ) : <p className="mt-2 text-xs leading-relaxed text-slate-600">No obvious text warnings found. This does not prove that the SMS, sender or website is genuine.</p>}
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-500">SMS screening is rule-based. Website visited: No · Sender verified: No.</p>
+            </section>
+          )}
+
+          {onViewInvestigation && (
+            <button
+              type="button"
+              onClick={() => onViewInvestigation({
+                message: input.trim(),
+                paymentUri: result.payment?.raw || '',
+                expectedPayee: expectedPayee.trim(),
+                expectedDirection: 'unknown',
+              })}
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-extrabold text-blue-800 shadow-sm hover:bg-blue-100"
+            >
+              <ShieldCheck size={17} /> View full TruthTrace investigation <ArrowUpRight size={16} />
+            </button>
+          )}
+          <p className="text-[11px] leading-relaxed text-slate-500">TruthTrace uses the same supplied text and observed UPI request. It does not fetch websites, verify recipient ownership or inherit demonstration data.</p>
 
           {result.apiError && (
             <section className="rounded-2xl border border-amber-warn/20 bg-amber-50 p-4">
@@ -743,7 +782,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
             </section>
           )}
 
-          {intentTrace && <TruthTraceCompact result={intentTrace} />}
+
 
           {firewallBlocked && (
             <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-800">

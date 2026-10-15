@@ -39,6 +39,7 @@ import {
   getLastSync,
   type SyncPayload,
 } from '@/lib/sync';
+import type { TraceInput } from '@/lib/truthTrace';
 import type {
   ParsedUPI,
   RiskAssessment,
@@ -68,6 +69,9 @@ function App() {
   const [shopAnalysis, setShopAnalysis] = useState<ShopAnalysisResult | null>(null);
   const [analyzingShop, setAnalyzingShop] = useState(false);
   const [adaptedVersion, setAdaptedVersion] = useState(0);
+  const [investigationDraft, setInvestigationDraft] = useState<TraceInput | undefined>(undefined);
+  const [investigationReturnTab, setInvestigationReturnTab] = useState<'links' | 'tools'>('tools');
+  const [investigationVersion, setInvestigationVersion] = useState(0);
   const [whatsappPopup, setWhatsappPopup] = useState<{ sender: string; message: string } | null>(null);
   const isSyncingRef = useRef(false);
 
@@ -323,6 +327,25 @@ function App() {
     setActiveTab('links');
   }, []);
 
+  const openInvestigation = useCallback((input: TraceInput) => {
+    setInvestigationDraft(input);
+    setInvestigationReturnTab('links');
+    setInvestigationVersion(version => version + 1);
+    setActiveTab('truthtrace');
+  }, []);
+
+  const openInvestigationExamples = useCallback(() => {
+    setInvestigationDraft(undefined);
+    setInvestigationReturnTab('tools');
+    setInvestigationVersion(version => version + 1);
+    setActiveTab('truthtrace');
+  }, []);
+
+  const openPatternInChecker = useCallback((message: string) => {
+    setRawUri(message);
+    setActiveTab('links');
+  }, []);
+
   const handlePatternAdded = useCallback(() => {
     setAdaptedVersion((version) => version + 1);
   }, []);
@@ -405,17 +428,6 @@ function App() {
               </section>
             )}
 
-            {!parsed && (
-              <section className="px-4 pt-3 sm:px-5">
-                <button type="button" onClick={() => setActiveTab('truthtrace')}
-                  className="flex w-full items-center gap-3 rounded-2xl border border-blue-200 bg-white p-3.5 text-left shadow-card hover:border-blue-400">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700"><GitBranch size={21}/></span>
-                  <span className="flex-1"><span className="block text-sm font-extrabold text-slate-900">NEW · TruthTrace investigation</span>
-                    <span className="mt-0.5 block text-xs leading-relaxed text-slate-600">Find contradictions between a message and its payment destination</span></span>
-                  <ChevronRight size={18} className="text-blue-700"/>
-                </button>
-              </section>
-            )}
 
             {parsed && assessment ? (
               <section className="px-4 pt-4 sm:px-5">
@@ -462,7 +474,7 @@ function App() {
 
         {activeTab === 'links' && (
           <div className="px-4 py-5 sm:px-5">
-            <LinkSafetyGateway telemetry={telemetry} initialInput={rawUri} />
+            <LinkSafetyGateway telemetry={telemetry} initialInput={rawUri} onViewInvestigation={openInvestigation} />
           </div>
         )}
 
@@ -476,36 +488,21 @@ function App() {
                 Tools & insights
               </h1>
               <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                Extra tools for demonstrations and investigating suspicious payment patterns.
+                Open a detailed payment report, train browser-only warning rules, or explore an illustrative fund-flow network.
               </p>
             </div>
 
             <button
               type="button"
-              onClick={() => setActiveTab('truthtrace')}
+              onClick={openInvestigationExamples}
               className="tactile flex w-full items-center gap-4 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-white p-4 text-left shadow-card hover:border-blue-400"
             >
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-white">
                 <GitBranch size={23} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-2 text-sm font-extrabold text-ink-primary">TruthTrace <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-700">NEW</span></span>
-                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Payment Intent Firewall · scam chain · live what-if replay</span>
-              </span>
-              <ChevronRight size={19} className="shrink-0 text-ink-dim" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('mule')}
-              className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
-            >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-pale text-brand-blue">
-                <Network size={22} />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-sm font-bold text-ink-primary">Fund-flow network</span>
-                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Explore the illustrative mule-account graph.</span>
+                <span className="flex items-center gap-2 text-sm font-extrabold text-ink-primary">TruthTrace report <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-700">DEMO</span></span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">One featured tampered-QR example · evidence chain · before/after replay</span>
               </span>
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
@@ -520,10 +517,34 @@ function App() {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-ink-primary">Scam pattern memory</span>
-                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Review and manage locally saved scam patterns.</span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Approve and test local browser-only signature rules.</span>
               </span>
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
+
+            <details className="group rounded-2xl border border-border bg-white shadow-card">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-ink-primary">
+                Additional educational visualisations
+                <ChevronRight size={17} className="text-ink-muted transition-transform group-open:rotate-90" />
+              </summary>
+              <div className="border-t border-border p-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab('mule')}
+              className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-pale text-brand-blue">
+                <Network size={22} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold text-ink-primary">Fund-flow network</span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Illustrative network only — no bank transaction data.</span>
+              </span>
+              <ChevronRight size={19} className="shrink-0 text-ink-dim" />
+            </button>
+
+              </div>
+            </details>
 
             <div className="rounded-2xl border border-dashed border-border bg-surface/70 p-4">
               <div className="flex items-start gap-3">
@@ -549,11 +570,11 @@ function App() {
 
         {activeTab === 'truthtrace' && (
           <section className="px-4 py-5 sm:px-5">
-            <button type="button" onClick={() => setActiveTab('tools')}
+            <button type="button" onClick={() => setActiveTab(investigationReturnTab)}
               className="mb-3 inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-semibold text-brand-blue hover:bg-brand-pale">
-              <ArrowLeft size={17} /> Back to tools
+              <ArrowLeft size={17} /> {investigationReturnTab === 'links' ? 'Back to message check' : 'Back to tools'}
             </button>
-            <TruthTraceLab />
+            <TruthTraceLab key={investigationVersion} initialInput={investigationDraft} />
           </section>
         )}
 
@@ -570,7 +591,7 @@ function App() {
 
             {activeTab === 'mule' && <MuleGraph parsed={parsed} />}
             {activeTab === 'adaptive' && (
-              <AdaptiveMemory onPatternAdded={handlePatternAdded} />
+              <AdaptiveMemory onPatternAdded={handlePatternAdded} onCheckMessage={openPatternInChecker} />
             )}
           </section>
         )}

@@ -13,7 +13,7 @@ const TABS: {
   icon: LucideIcon;
 }[] = [
   { key: 'scanner', label: 'Scan QR', icon: ScanLine },
-  { key: 'links', label: 'Check link', icon: Link2 },
+  { key: 'links', label: 'Check SMS/Link', icon: Link2 },
   { key: 'tools', label: 'More tools', icon: Grid2X2 },
 ];
 

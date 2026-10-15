@@ -67,7 +67,10 @@ export function matchAdaptedPatterns(
         )
       : [];
 
-    if (keywords.some((keyword) => lower.includes(keyword.toLowerCase()))) {
+    // Two distinct keywords are required to avoid broad rules flagging an
+    // unrelated legitimate message merely because it says "refund" or "link".
+    const distinct = [...new Set(keywords.map(keyword => keyword.toLowerCase().trim()))];
+    if (distinct.length >= 2 && distinct.filter(keyword => lower.includes(keyword)).length >= 2) {
       return {
         ...pattern,
         matchLatency: 'Matched locally',

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Network, Cpu, Database, Plus, Check, Trash2, Activity } from 'lucide-react';
+import { Network, Cpu, Trash2 } from 'lucide-react';
 import type { ParsedUPI, AdaptedPattern } from '@/lib/types';
-import { extractFraudSignature, loadAdaptedPatterns, saveAdaptedPattern } from '@/lib/risk';
+import { extractFraudSignature, loadAdaptedPatterns, saveAdaptedPattern, matchAdaptedPatterns } from '@/lib/risk';
 
 interface MuleGraphProps {
   parsed: ParsedUPI | null;
@@ -53,15 +53,9 @@ const NODE_STYLES = {
 export function MuleGraph({ parsed }: MuleGraphProps) {
   const graph = DEFAULT_GRAPH;
 
-  // Update mule1 node if we have a parsed VPA
-  const displayGraph = parsed?.pa
-    ? {
-        ...graph,
-        nodes: graph.nodes.map(n =>
-          n.id === 'mule1' ? { ...n, label: parsed.pa.split('@')[0], sublabel: `Layer 1 Mule @${parsed.pa.split('@')[1] || '?'}` } : n
-        ),
-      }
-    : graph;
+  // A UPI QR contains the intended recipient only; it does not reveal
+  // downstream transfers. Never graft a scanned account into this example network.
+  const displayGraph = graph;
 
   return (
     <div className="px-4 py-3 space-y-3">
@@ -69,23 +63,14 @@ export function MuleGraph({ parsed }: MuleGraphProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Network size={16} className="text-amber-warn" />
-          <span className="text-xs font-bold tracking-tight text-ink-primary">Mule Ring Graph</span>
+          <span className="text-xs font-bold tracking-tight text-ink-primary">Illustrative Fund-Flow Network</span>
         </div>
         <div className="text-[10px] font-mono text-ink-muted">Fan-out: {graph.edges.filter(e => e.from === 'mule1').length} accounts</div>
       </div>
 
-      {/* ML Model Badges */}
-      <div className="grid grid-cols-3 gap-2">
-        {[
-          { label: 'Precision', value: '96.4%', color: 'text-npcigreen' },
-          { label: 'Recall', value: '94.8%', color: 'text-npcigreen' },
-          { label: 'FPR', value: '1.2%', color: 'text-amber-warn' },
-        ].map(m => (
-          <div key={m.label} className="rounded-lg bg-surface border border-border p-2 text-center">
-            <div className="text-[9px] uppercase tracking-wider text-ink-dim font-semibold">{m.label}</div>
-            <div className={`font-mono text-sm font-bold ${m.color} tabular-nums`}>{m.value}</div>
-          </div>
-        ))}
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+        <strong>SIMULATION — NOT A LIVE MONEY TRAIL.</strong> These nodes, amounts and delays are fictional. A QR/UPI URI cannot reveal where money goes after payment. No bank ledger or downstream transfer API is connected.
+        {parsed?.pa && <p className="mt-2 break-all font-medium">Your scanned recipient is <span className="font-mono">{parsed.pa}</span>. No actual transfer path is known for it.</p>}
       </div>
 
       {/* SVG Graph */}
@@ -184,7 +169,7 @@ export function MuleGraph({ parsed }: MuleGraphProps) {
 
       {/* Timeline */}
       <div className="rounded-xl bg-surface border border-border p-3">
-        <div className="text-[10px] uppercase tracking-wider font-bold text-ink-muted mb-2">Fan-Out Timeline</div>
+        <div className="text-[10px] uppercase tracking-wider font-bold text-ink-muted mb-2">Illustrative Demo Timeline</div>
         <div className="space-y-1.5">
           {[
             { t: '0s', e: 'Victim sends ₹5,000 to ramesh.mule88@okaxis', color: 'text-crimson-fraud' },
@@ -192,7 +177,7 @@ export function MuleGraph({ parsed }: MuleGraphProps) {
             { t: '52s', e: 'Split ₹1,800 → cashier.x7@ybl', color: 'text-amber-warn' },
             { t: '58s', e: 'Split ₹1,400 → drain.f3@okhdfc', color: 'text-amber-warn' },
             { t: '2m 11s', e: 'Crypto OTC conversion begins (USDT)', color: 'text-crimson-fraud' },
-            { t: '<4m', e: 'Full cashout complete — traceability lost', color: 'text-crimson-fraud' },
+            { t: '<4m', e: 'Example cashout stage (not a verified event)', color: 'text-crimson-fraud' },
           ].map((step, i) => (
             <div key={i} className="flex items-start gap-2 text-[10px]">
               <span className="font-mono text-ink-dim w-12 shrink-0 tabular-nums">{step.t}</span>
@@ -207,128 +192,125 @@ export function MuleGraph({ parsed }: MuleGraphProps) {
 
 interface AdaptiveMemoryProps {
   onPatternAdded: () => void;
+  onCheckMessage?: (message: string) => void;
 }
 
-export function AdaptiveMemory({ onPatternAdded }: AdaptiveMemoryProps) {
+export function AdaptiveMemory({ onPatternAdded, onCheckMessage }: AdaptiveMemoryProps) {
   const [input, setInput] = useState('');
   const [patterns, setPatterns] = useState<AdaptedPattern[]>(loadAdaptedPatterns());
-  const [extracted, setExtracted] = useState<AdaptedPattern | null>(null);
+  const [draft, setDraft] = useState<AdaptedPattern | null>(null);
+  const [testMessage, setTestMessage] = useState('');
+  const [notice, setNotice] = useState('');
+  const matched = testMessage.trim() ? matchAdaptedPatterns(testMessage) : null;
 
-  const handleExtract = () => {
+  const prepare = () => {
     if (!input.trim()) return;
     const { keywords, signature } = extractFraudSignature(input);
-    const pattern: AdaptedPattern = {
+    const unique = [...new Set(keywords.map(keyword => keyword.toLowerCase().trim()))].filter(Boolean);
+    if (unique.length < 2) {
+      setNotice('This sample generated fewer than two keywords. Add a distinctive second phrase before creating a rule.');
+      setDraft(null);
+      return;
+    }
+    setDraft({
       id: `pat_${Date.now()}`,
       signature,
-      keywords,
+      keywords: unique,
       addedAt: Date.now(),
       sampleText: input.trim(),
-      matchLatency: '<5ms',
-    };
-    saveAdaptedPattern(pattern);
-    setPatterns([...patterns, pattern]);
-    setExtracted(pattern);
+      matchLatency: 'Local heuristic match',
+    });
+    setNotice('Review the keywords and explicitly approve before this rule becomes active.');
+  };
+
+  const approve = () => {
+    if (!draft) return;
+    const normalized = draft.signature.trim().toLowerCase();
+    if (patterns.some(p => p.signature.trim().toLowerCase() === normalized)) {
+      setNotice('This signature is already in your browser memory.');
+      setDraft(null);
+      return;
+    }
+    saveAdaptedPattern(draft);
+    const stored = loadAdaptedPatterns();
+    if (!stored.some(p => p.signature.trim().toLowerCase() === normalized)) {
+      setNotice('The browser could not save this rule. Check storage permissions.');
+      return;
+    }
+    setPatterns(stored);
+    setTestMessage(draft.sampleText);
     setInput('');
+    setDraft(null);
+    setNotice('Approved locally. Try modifying the test text below to check for false positives.');
     onPatternAdded();
   };
 
   const handleDelete = (id: string) => {
     const updated = patterns.filter(p => p.id !== id);
     setPatterns(updated);
-    localStorage.setItem('kavach_adapted_patterns', JSON.stringify(updated));
+    try { localStorage.setItem('kavach_adapted_patterns', JSON.stringify(updated)); }
+    catch { setNotice('Could not update browser storage.'); }
+    onPatternAdded();
   };
 
   return (
-    <div className="px-4 py-3 space-y-3">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Cpu size={16} className="text-npcigreen" />
-          <span className="text-xs font-bold tracking-tight text-ink-primary">Zero-Day Adaptive Learning</span>
+    <div className="space-y-4 px-4 py-3">
+      <header>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><Cpu size={18} className="text-blue-700" /> Scam Pattern Memory</h2>
+          <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-800">{patterns.length} local rules</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Database size={12} className="text-ink-dim" />
-          <span className="text-[10px] font-mono text-ink-muted">{patterns.length} patterns</span>
-        </div>
-      </div>
-
-      {/* Info */}
-      <div className="rounded-xl bg-npcigreen/5 border border-npcigreen/20 p-3">
-        <p className="text-[11px] text-ink-muted leading-relaxed">
-          Type or paste a new unseen scam message or UPI transaction note. The AI extracts a semantic fraud signature, saves it to local vector memory, and future scans catch that pattern in <span className="text-npcigreen font-bold">&lt;5ms</span>.
-        </p>
-      </div>
-
-      {/* Input */}
-      <div className="space-y-2">
-        <textarea
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder='e.g., "PM Kisan Yojana 18th Installment ₹4000 Credit Claim — Click to verify your account"'
-          className="w-full bg-surface border border-border rounded-xl px-3 py-2.5 text-xs text-ink-primary outline-none focus:border-npcigreen/40 resize-none font-medium"
-          rows={3}
-        />
-        <button
-          onClick={handleExtract}
-          disabled={!input.trim()}
-          className="tactile w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-npcigreen text-obsidian font-bold text-sm tracking-tight disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110"
-        >
-          <Activity size={16} /> Extract Fraud Signature & Immunize
-        </button>
-      </div>
-
-      {/* Extraction Result */}
-      {extracted && (
-        <div className="rounded-xl bg-npcigreen/10 border border-npcigreen/30 p-3 space-y-2 animate-fade-in">
-          <div className="flex items-center gap-2">
-            <Check size={14} className="text-npcigreen" />
-            <span className="text-[10px] uppercase tracking-wider font-bold text-npcigreen">Pattern Immunized</span>
-          </div>
-          <div className="text-[10px] text-ink-muted">Signature: <span className="font-mono text-npcigreen">{extracted.signature}</span></div>
-          <div className="flex flex-wrap gap-1">
-            {extracted.keywords.map(k => (
-              <span key={k} className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-surface border border-border text-ink-primary">
-                {k}
-              </span>
-            ))}
-          </div>
-          <div className="text-[10px] text-npcigreen font-mono">Match latency: {extracted.matchLatency}</div>
-        </div>
-      )}
-
-      {/* Stored patterns */}
-      {patterns.length > 0 && (
-        <div className="space-y-2">
-          <div className="text-[10px] uppercase tracking-wider font-bold text-ink-muted">Immunized Patterns (localStorage)</div>
-          {patterns.map(p => (
-            <div key={p.id} className="rounded-xl bg-surface border border-border p-3">
-              <div className="flex items-start justify-between gap-2 mb-1.5">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11px] text-ink-primary font-medium truncate">{p.sampleText}</div>
-                </div>
-                <button
-                  onClick={() => handleDelete(p.id)}
-                  className="tactile text-ink-dim hover:text-crimson-fraud shrink-0"
-                >
-                  <Trash2 size={12} />
-                </button>
-              </div>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-mono text-[9px] text-npcigreen">{p.signature}</span>
-                <span className="text-[9px] text-ink-dim">·</span>
-                <span className="text-[9px] font-mono text-ink-muted">{p.matchLatency}</span>
-              </div>
+        <p className="mt-2 text-xs leading-relaxed text-slate-600">Create a candidate rule, review its keywords, then approve it. Approved rules are stored only in this browser, not in Supabase or a bank network. This is keyword matching, not AI training.</p>
+      </header>
+      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
+        <label htmlFor="kavach-pattern-input" className="text-xs font-bold text-slate-800">1. Paste a suspected scam pattern (fictional demo preferred)</label>
+        <button type="button" onClick={() => { setInput('Escrow clearance pending. Complete the seller checkpoint before your payout can proceed.'); setDraft(null); setNotice('Example loaded. Generate and review a draft before approval.'); }} className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800">Load fictional analyst demo</button>
+        <textarea id="kavach-pattern-input" value={input} onChange={e => {setInput(e.target.value);setDraft(null);setNotice('');}}
+          placeholder="e.g. Refund verification deposit required immediately" rows={3}
+          className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-900" />
+        <button type="button" onClick={prepare} disabled={!input.trim()} className="min-h-11 w-full rounded-xl bg-blue-700 px-4 text-sm font-bold text-white disabled:opacity-40">Generate draft rule</button>
+        {draft && (
+          <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50 p-3">
+            <p className="text-xs font-extrabold text-amber-900">2. Analyst review required — not active yet</p>
+            <p className="break-all text-[11px] text-amber-900">Rule: {draft.signature}</p>
+            <div className="flex flex-wrap gap-1">{draft.keywords.map(k => <span key={k} className="rounded-md bg-white px-2 py-1 text-[11px] font-semibold text-slate-700">{k}</span>)}</div>
+            <p className="text-[11px] text-amber-900">At least two distinct keywords must match. Broad keywords can still cause false positives; review before activation.</p>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => setDraft(null)} className="min-h-10 flex-1 rounded-lg border border-amber-300 px-2 text-xs font-bold text-amber-900">Discard</button>
+              <button type="button" onClick={approve} className="min-h-10 flex-1 rounded-lg bg-emerald-700 px-2 text-xs font-bold text-white">Approve local rule</button>
             </div>
-          ))}
+          </div>
+        )}
+        {notice && <p role="status" className="text-xs text-slate-700">{notice}</p>}
+      </section>
+      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
+        <label htmlFor="kavach-pattern-test" className="text-xs font-bold text-slate-800">3. Test a message against approved rules</label>
+        <textarea id="kavach-pattern-test" rows={3} value={testMessage} onChange={e => setTestMessage(e.target.value)}
+          placeholder="Type a suspicious and then an unrelated message to test false positives"
+          className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-900" />
+        {onCheckMessage && testMessage.trim() && (
+          <button type="button" onClick={() => onCheckMessage(testMessage.trim())}
+            className="min-h-11 w-full rounded-xl border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs font-bold text-blue-900">Open this message in Check SMS/Link →</button>
+        )}
+        <div aria-live="polite" className={`rounded-xl p-3 text-xs ${matched ? 'border border-amber-200 bg-amber-50 text-amber-900' : 'border border-slate-200 bg-slate-50 text-slate-600'}`}>
+          {matched ? <>Local match: <strong>{matched.signature}</strong>. This is a saved-rule match, not proof of fraud. The same approved rule can contribute to message warning signs in TruthTrace.</>
+            : testMessage.trim() ? 'No approved local rule matched. This is not proof the message is genuine.' : 'Enter test text to check locally saved patterns.'}
         </div>
-      )}
-
-      {patterns.length === 0 && !extracted && (
-        <div className="text-center py-6">
-          <Plus size={24} className="text-ink-dim mx-auto mb-2" />
-          <p className="text-[11px] text-ink-dim">No patterns learned yet. Extract your first scam signature above.</p>
-        </div>
-      )}
+      </section>
+      <section className="space-y-2">
+        <h3 className="text-xs font-extrabold text-slate-800">Active reviewed signatures (this browser only)</h3>
+        {patterns.length ? patterns.map(p => (
+          <div key={p.id} className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <p className="break-words text-xs font-semibold text-slate-900">{p.sampleText}</p>
+                <p className="mt-1 break-all font-mono text-[10px] text-slate-600">{p.signature}</p>
+              </div>
+              <button type="button" onClick={() => handleDelete(p.id)} aria-label={`Remove ${p.signature}`} className="shrink-0 rounded-lg border border-slate-200 p-2 text-rose-700"><Trash2 size={16}/></button>
+            </div>
+          </div>
+        )) : <p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">No reviewed rules saved yet.</p>}
+      </section>
     </div>
   );
 }
