@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+html,
+body {
+  background: #f5f7fb;
+  color: #142033;
+  font-family: Inter, 'Plus Jakarta Sans', system-ui, sans-serif;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  padding: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid rgba(23, 105, 224, 0.35);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(23, 105, 224, 0.18);
+}
+
+/* Retained for QR preview/scan treatment. */
+.dot-matrix {
+  background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.dot-matrix-dense {
+  background-image: radial-gradient(circle, #d9e2ee 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+.perforated {
+  background-image: radial-gradient(circle, #f5f7fb 3px, transparent 3px);
+  background-size: 12px 100%;
+  background-repeat: repeat-x;
+  height: 6px;
+  background-color: #e2e8f0;
+}
+
+.perforated-vertical {
+  background-image: radial-gradient(circle, #f5f7fb 3px, transparent 3px);
+  background-size: 100% 12px;
+  background-repeat: repeat-y;
+  width: 6px;
+  background-color: #e2e8f0;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+@keyframes laserSweep {
+  0%,
+  100% {
+    top: 8%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 88%;
+    opacity: 1;
+  }
+}
+
+.laser-sweep {
+  animation: laserSweep 2.2s ease-in-out infinite;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  -moz-font-feature-settings: 'tnum';
+  font-feature-settings: 'tnum';
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tactile {
+  transition:
+    transform 0.08s ease-out,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.tactile:active {
+  transform: scale(0.985);
+}
+
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Make the video/canvas inserted by html5-qrcode fill its scanner host. */
+#qr-scanner-region video,
+#qr-scanner-region canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
