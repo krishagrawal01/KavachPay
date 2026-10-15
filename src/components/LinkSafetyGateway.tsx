@@ -16,6 +16,8 @@ import {
 import type { ParsedUPI, TelemetryState } from '@/lib/types';
 import { parseUPI, formatAmount } from '@/lib/upi';
 import { assessRisk } from '@/lib/risk';
+import { analyzeTruthTrace } from '@/lib/truthTrace';
+import { TruthTraceCompact } from '@/components/TruthTraceLab';
 import {
   analyzePaymentWithML,
   type MLAnalysisResult,
@@ -380,7 +382,7 @@ function resultStyle(level: RiskBand): string {
 
 function resultTitle(result: AnalysisResult): string {
   if (result.apiError && result.level === 'UNVERIFIED') return 'Could not verify right now';
-  if (result.decision === 'BLOCK') return 'Stop â€” payment blocked';
+  if (result.decision === 'BLOCK') return 'Stop — payment blocked';
   if (result.decision === 'WARN') return 'Pause and review';
   if (result.level === 'UNVERIFIED') return 'Destination not verified';
   if (result.level === 'LOW') return 'No major warning signs found';
@@ -394,8 +396,11 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
   const [mlLoading, setMlLoading] = useState(false);
   const [userAverageAmount, setUserAverageAmount] = useState('300');
   const [isNewPayee, setIsNewPayee] = useState(false);
+  const [expectedPayee, setExpectedPayee] = useState('');
 
   const lastAutoAnalyzedRef = useRef('');
+  const analysisSequenceRef = useRef(0);
+  const lastCheckedTextRef = useRef('');
   const hour = new Date().getHours();
   const isOddHour = hour >= 22 || hour < 6;
 
@@ -408,6 +413,8 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
     }
 
     setError('');
+    const sequence = ++analysisSequenceRef.current;
+    lastCheckedTextRef.current = text;
     const local = analyseInput(text, telemetry);
     setResult(local.localScore < 20 && local.level === 'LOW' ? { ...local, level: 'UNVERIFIED' } : local);
     setMlLoading(true);
@@ -425,14 +432,16 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
 
     try {
       const ml = await analyzePaymentWithML(payload);
+      if (sequence !== analysisSequenceRef.current) return;
       setResult(mergeMLResult(local, ml, telemetry));
     } catch (requestError: unknown) {
       const message = requestError instanceof Error
         ? requestError.message
         : 'The ML analysis could not be completed.';
+      if (sequence !== analysisSequenceRef.current) return;
       setResult(makeUnavailableResult(local, message, telemetry));
     } finally {
-      setMlLoading(false);
+      if (sequence === analysisSequenceRef.current) setMlLoading(false);
     }
   }, [input, telemetry, userAverageAmount, isNewPayee, isOddHour]);
 
@@ -450,6 +459,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
     // automatically, but still require an explicit tap to open a UPI app.
     lastAutoAnalyzedRef.current = text;
     setInput(text);
+    ++analysisSequenceRef.current;
     setResult(null);
     setError('');
     void analyseText(text);
@@ -460,7 +470,10 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
   }
 
   function continueToUpi() {
-    if (!result?.payment) return;
+    if (!result?.payment || input.trim() !== lastCheckedTextRef.current) return;
+    // Client-side intent firewall is additional to, never a substitute for, ML policy.
+    const intentCheck = analyzeTruthTrace({ message: input, paymentUri: result.payment.raw, expectedPayee });
+    if (intentCheck.blockHandoff) return;
 
     const payment = result.payment;
     const useLocalFallback = Boolean(
@@ -489,13 +502,13 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
         `Local checks did not reach the configured warning threshold, but this is NOT an ML approval and does NOT prove the payment is safe.\n\n` +
         `Recipient: ${payment.pn || payment.pa}\n` +
         `UPI ID: ${payment.pa}\n` +
-        `Amount: ${payment.am ? `â‚¹${formatAmount(payment.am)}` : 'Not specified'}\n` +
+        `Amount: ${payment.am ? `₹${formatAmount(payment.am)}` : 'Not specified'}\n` +
         `Local score: ${result.localScore}/100\n\n` +
         `Continue only if you independently trust this recipient. Review the name and amount in your UPI app. Continue with local checks only?`
       : `Review this payment in your UPI app.\n\n` +
         `Recipient: ${payment.pn || payment.pa}\n` +
         `UPI ID: ${payment.pa}\n` +
-        `Amount: ${payment.am ? `â‚¹${formatAmount(payment.am)}` : 'Not specified'}\n\n` +
+        `Amount: ${payment.am ? `₹${formatAmount(payment.am)}` : 'Not specified'}\n\n` +
         'Kavach cannot guarantee that a payment is safe. Verify the recipient and amount before authorising it.\n\nContinue?';
 
     if (window.confirm(confirmationText)) {
@@ -514,12 +527,17 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
     window.speechSynthesis.speak(speech);
   }
 
-  const canContinue = Boolean(result?.handoffAllowed && result.payment);
+  const intentTrace = result?.payment
+    ? analyzeTruthTrace({ message: input, paymentUri: result.payment.raw, expectedPayee })
+    : null;
+  const firewallBlocked = Boolean(intentTrace?.blockHandoff);
+  const canContinue = Boolean(result?.handoffAllowed && result.payment && !firewallBlocked);
   const canUseLocalFallback = Boolean(
     result?.apiError &&
     !result.ml &&
     result.localFallbackAllowed &&
-    result.payment
+    result.payment &&
+    !firewallBlocked
   );
 
   return (
@@ -540,11 +558,13 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
           id="kavach-link-input"
           value={input}
           onChange={(event) => {
+            ++analysisSequenceRef.current;
+            setMlLoading(false);
             setInput(event.target.value);
             setResult(null);
             setError('');
           }}
-          placeholder={'Paste an SMS, WhatsApp message, email, website URL or UPI payment linkâ€¦'}
+          placeholder={'Paste an SMS, WhatsApp message, email, website URL or UPI payment link…'}
           rows={5}
           maxLength={12000}
           className="w-full resize-none rounded-2xl border border-border bg-obsidian px-3.5 py-3 text-sm leading-relaxed text-ink-primary outline-none placeholder:text-ink-dim focus:border-brand-blue"
@@ -558,7 +578,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
             className="tactile inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:brightness-105 disabled:opacity-60"
           >
             {mlLoading ? <Loader2 size={17} className="animate-spin" /> : <Search size={17} />}
-            {mlLoading ? 'Checkingâ€¦' : 'Check for scams'}
+            {mlLoading ? 'Checking…' : 'Check for scams'}
           </button>
         </div>
         {error && <p role="alert" className="text-sm text-crimson-fraud">{error}</p>}
@@ -573,7 +593,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
           <div className="space-y-3 pb-1 pt-3">
             <div>
               <label htmlFor="kavach-average-amount" className="block text-xs font-semibold text-ink-primary">
-                Your usual payment amount (â‚¹)
+                Your usual payment amount (₹)
               </label>
               <input
                 id="kavach-average-amount"
@@ -584,6 +604,14 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
                 onChange={(event) => setUserAverageAmount(event.target.value)}
                 className="mt-1.5 w-full rounded-xl border border-border bg-obsidian px-3 py-2.5 text-sm text-ink-primary outline-none focus:border-brand-blue"
               />
+            </div>
+            <div>
+              <label htmlFor="kavach-expected-payee" className="block text-xs font-semibold text-ink-primary">Expected recipient UPI ID (optional)</label>
+              <input id="kavach-expected-payee" type="text" value={expectedPayee}
+                onChange={event => setExpectedPayee(event.target.value)}
+                placeholder="From a trusted source, not this message"
+                className="mt-1.5 w-full rounded-xl border border-border bg-obsidian px-3 py-2.5 text-sm text-ink-primary outline-none focus:border-brand-blue" />
+              <p className="mt-1 text-[11px] leading-relaxed text-ink-dim">TruthTrace compares this reference to the UPI recipient; it cannot verify ownership.</p>
             </div>
             <label className="flex items-start gap-2.5 text-xs leading-relaxed text-ink-muted">
               <input
@@ -613,10 +641,10 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
 
       {result && (
         <div className="space-y-3">
-          <section className={`rounded-3xl border p-4 shadow-card sm:p-5 ${resultStyle(result.level)}`}>
+          <section className={`rounded-3xl border p-4 shadow-card sm:p-5 ${firewallBlocked ? 'border-red-200 bg-red-50 text-red-800' : resultStyle(result.level)}`}>
             <div className="flex items-start gap-3">
               <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/75">
-                {result.decision === 'BLOCK' || result.level === 'HIGH' || result.level === 'CRITICAL' ? (
+                {firewallBlocked || result.decision === 'BLOCK' || result.level === 'HIGH' || result.level === 'CRITICAL' ? (
                   <ShieldAlert size={22} />
                 ) : result.decision === 'WARN' || result.level === 'MEDIUM' || result.level === 'UNVERIFIED' ? (
                   <AlertTriangle size={22} />
@@ -625,9 +653,11 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-base font-extrabold leading-snug">{resultTitle(result)}</p>
+                <p className="text-base font-extrabold leading-snug">{firewallBlocked ? 'Payment contradiction — handoff blocked' : resultTitle(result)}</p>
                 <p className="mt-1 text-sm leading-relaxed opacity-90">
-                  {result.decision === 'BLOCK'
+                  {firewallBlocked
+                    ? 'The payment intent conflicts with the supplied message or trusted recipient reference. Review the TruthTrace evidence below.'
+                    : result.decision === 'BLOCK'
                     ? 'Do not continue with this payment. Review the reasons below.'
                     : result.decision === 'WARN'
                       ? 'Something needs your attention. Do not pay until you have checked the details.'
@@ -653,6 +683,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
               <span className="rounded-full bg-white/75 px-3 py-1.5 text-xs font-bold">
                 {result.ml ? `Model: ${result.decision}` : 'Model not connected'}
               </span>
+              {firewallBlocked && <span className="rounded-full bg-red-100 px-3 py-1.5 text-xs font-bold text-red-800">TruthTrace: STOP</span>}
             </div>
           </section>
 
@@ -702,7 +733,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
                 <div className="flex items-start justify-between gap-4">
                   <span className="text-xs text-ink-muted">Amount</span>
                   <span className="text-right text-sm font-bold text-ink-primary">
-                    {result.payment.am ? `â‚¹${formatAmount(result.payment.am)}` : 'Not specified'}
+                    {result.payment.am ? `₹${formatAmount(result.payment.am)}` : 'Not specified'}
                   </span>
                 </div>
               </div>
@@ -710,6 +741,21 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
                 Confirm the payee and amount in your UPI app. Kavach does not verify account ownership or confirm that a payment was completed.
               </p>
             </section>
+          )}
+
+          {intentTrace && <TruthTraceCompact result={intentTrace} />}
+
+          {firewallBlocked && (
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-800">
+              Payment handoff disabled: TruthTrace found a contradiction between the supplied claim/reference and the UPI request.
+            </div>
+          )}
+
+          {canContinue && (
+            <button type="button" onClick={continueToUpi}
+              className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand-blue px-4 py-3 text-sm font-bold text-white shadow-sm hover:brightness-105">
+              Continue to UPI app <ArrowUpRight size={18}/>
+            </button>
           )}
 
           {result.links.length > 0 && (
@@ -800,15 +846,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '' }: Props) {
             </button>
           )}
 
-          {canContinue ? (
-            <button
-              type="button"
-              onClick={continueToUpi}
-              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand-blue px-4 py-3 text-sm font-bold text-white shadow-sm hover:brightness-105"
-            >
-              Continue to UPI app <ArrowUpRight size={17} />
-            </button>
-          ) : canUseLocalFallback ? null : (
+          {canContinue || canUseLocalFallback || firewallBlocked ? null : (
             <div className="flex items-start gap-2 rounded-2xl border border-border bg-surface p-3.5 text-xs leading-relaxed text-ink-muted">
               {result.decision === 'BLOCK' ? <ShieldAlert size={16} className="mt-0.5 shrink-0 text-crimson-fraud" /> : <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-ink-dim" />}
               <span>

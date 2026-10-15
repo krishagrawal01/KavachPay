@@ -19,7 +19,7 @@ const TABS: {
 
 export function TabBar({ active, onChange }: TabBarProps) {
   const selectedTab =
-    active === 'mule' || active === 'adaptive' ? 'tools' : active;
+    active === 'mule' || active === 'adaptive' || active === 'truthtrace' ? 'tools' : active;
 
   return (
     <nav

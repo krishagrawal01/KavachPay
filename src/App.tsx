@@ -6,6 +6,7 @@ import {
   FlaskConical,
   Network,
   ShieldCheck,
+  GitBranch,
   Sparkles,
 } from 'lucide-react';
 
@@ -19,6 +20,7 @@ import { JudgeControls } from '@/components/JudgeControls';
 import { MuleGraph, AdaptiveMemory } from '@/components/MuleGraph';
 import { WhatsAppPopup } from '@/components/WhatsAppPopup';
 import { LinkSafetyGateway } from '@/components/LinkSafetyGateway';
+import { TruthTraceLab } from '@/components/TruthTraceLab';
 
 import { parseUPI, formatAmount } from '@/lib/upi';
 import { assessRisk } from '@/lib/risk';
@@ -403,6 +405,18 @@ function App() {
               </section>
             )}
 
+            {!parsed && (
+              <section className="px-4 pt-3 sm:px-5">
+                <button type="button" onClick={() => setActiveTab('truthtrace')}
+                  className="flex w-full items-center gap-3 rounded-2xl border border-blue-200 bg-white p-3.5 text-left shadow-card hover:border-blue-400">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700"><GitBranch size={21}/></span>
+                  <span className="flex-1"><span className="block text-sm font-extrabold text-slate-900">NEW · TruthTrace investigation</span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-slate-600">Find contradictions between a message and its payment destination</span></span>
+                  <ChevronRight size={18} className="text-blue-700"/>
+                </button>
+              </section>
+            )}
+
             {parsed && assessment ? (
               <section className="px-4 pt-4 sm:px-5">
                 <button
@@ -468,6 +482,21 @@ function App() {
 
             <button
               type="button"
+              onClick={() => setActiveTab('truthtrace')}
+              className="tactile flex w-full items-center gap-4 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-white p-4 text-left shadow-card hover:border-blue-400"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-white">
+                <GitBranch size={23} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2 text-sm font-extrabold text-ink-primary">TruthTrace <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-700">NEW</span></span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Payment Intent Firewall · scam chain · live what-if replay</span>
+              </span>
+              <ChevronRight size={19} className="shrink-0 text-ink-dim" />
+            </button>
+
+            <button
+              type="button"
               onClick={() => setActiveTab('mule')}
               className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
             >
@@ -515,6 +544,16 @@ function App() {
                 </div>
               </div>
             </div>
+          </section>
+        )}
+
+        {activeTab === 'truthtrace' && (
+          <section className="px-4 py-5 sm:px-5">
+            <button type="button" onClick={() => setActiveTab('tools')}
+              className="mb-3 inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-semibold text-brand-blue hover:bg-brand-pale">
+              <ArrowLeft size={17} /> Back to tools
+            </button>
+            <TruthTraceLab />
           </section>
         )}
 
