@@ -583,7 +583,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
             className="tactile inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:brightness-105 disabled:opacity-60"
           >
             {mlLoading ? <Loader2 size={17} className="animate-spin" /> : <Search size={17} />}
-            {mlLoading ? t('scanning') : t('checkForScams')}
+            {mlLoading ? t('checking') : t('checkForScams')}
           </button>
         </div>
         {error && <p role="alert" className="text-sm text-crimson-fraud">{error}</p>}
