@@ -13,6 +13,7 @@ import {
 
 import { PhoneShell, JudgePanel } from '@/components/PhoneShell';
 import { AppHeader } from '@/components/AppHeader';
+import { AccuracyIcon, PatternMemoryIcon, TruthTraceIcon } from '@/components/BrandIcons';
 import { QRScanner } from '@/components/QRScanner';
 import { UPIDissector } from '@/components/UPIDissector';
 import { InterceptionShield } from '@/components/InterceptionShield';
@@ -500,7 +501,7 @@ function App() {
               className="tactile flex w-full items-center gap-4 rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-blue-300"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-blue text-white">
-                <GitBranch size={23} />
+                <TruthTraceIcon size={23} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2 text-sm font-extrabold text-ink-primary">TruthTrace report <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-700">DEMO</span></span>
@@ -515,7 +516,7 @@ function App() {
               className="tactile flex w-full items-center gap-4 rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-brand-blue/40"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-npcigreen">
-                <BrainCircuit size={22} />
+                <PatternMemoryIcon size={22} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-ink-primary">Scam pattern memory</span>
@@ -529,7 +530,7 @@ function App() {
               onClick={() => setActiveTab('accuracy')}
               className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700"><BarChart3 size={22}/></span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700"><AccuracyIcon size={22} /></span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-ink-primary">Accuracy Lab <span className="ml-1 text-[10px] text-violet-700">NEW</span></span>
                 <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Measure errors on synthetic cases; compare context rules against simple keywords.</span>
