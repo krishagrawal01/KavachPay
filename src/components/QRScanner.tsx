@@ -241,41 +241,41 @@ export function QRScanner({
   };
 
   return (
-    <div className="space-y-4 px-4 pb-5 pt-4 sm:px-5">
+    <div className="space-y-4 px-4 pb-6 pt-4 sm:px-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold tracking-tight text-ink-primary">Scan a payment QR</h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-muted">Check the payment details before you send money.</p>
         </div>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-pale text-brand-blue">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-pale text-brand-blue">
           <QrCode size={21} />
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-border bg-surface p-3 shadow-card">
-        <div className="relative h-[260px] overflow-hidden rounded-2xl border border-border bg-slate-950 sm:h-[300px]">
+      <div className="kavach-card overflow-hidden p-3 sm:p-4">
+        <div className="relative mx-auto aspect-square w-full max-w-[360px] overflow-hidden rounded-xl border border-slate-800 bg-[#0B1220]">
           <div
             id={CAMERA_REGION_ID}
             className={`absolute inset-0 h-full w-full ${scanning ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
           />
 
           {!scanning && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-950 px-6 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl border border-white/15 bg-white/5 text-emerald-300">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#0B1220] px-5 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-emerald-300">
                 <QrCode size={45} strokeWidth={1.35} />
               </div>
-              <p className="text-sm font-semibold text-white">Point your camera at the QR code</p>
-              <p className="max-w-[260px] text-xs leading-relaxed text-slate-300">
-                Keep the full code inside the frame. We will show the payment details before you continue.
+              <p className="text-sm font-semibold text-white">Align the QR code inside the frame</p>
+              <p className="max-w-[250px] text-xs leading-relaxed text-slate-300">
+                Keep the whole code visible. We will review the payment details before you continue.
               </p>
             </div>
           )}
 
           {scanning && (
             <>
-              <div className="pointer-events-none absolute inset-8 z-10 rounded-3xl border-2 border-emerald-300/90 shadow-[0_0_0_999px_rgba(2,6,23,0.16)]" />
-              <div className="absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-full bg-slate-950/80 px-3 py-1.5 text-xs font-semibold text-emerald-300">
-                Camera is active
+              <div className="pointer-events-none absolute inset-5 z-10 rounded-xl border-2 border-emerald-300/90 shadow-[0_0_0_999px_rgba(2,6,23,0.16)]" />
+              <div role="status" className="absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-md bg-slate-950/90 px-2.5 py-1.5 text-[11px] font-semibold text-emerald-300">
+                Camera active
               </div>
               <button
                 type="button"
@@ -299,7 +299,7 @@ export function QRScanner({
           type="button"
           onClick={() => void startScanner()}
           disabled={scanning}
-          className="tactile mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand-blue px-4 py-3 text-sm font-bold text-white shadow-sm hover:brightness-105 disabled:opacity-50"
+          className="kavach-primary-action tactile mt-3 w-full disabled:opacity-50"
         >
           <Camera size={18} />
           {scanning ? 'Scanning…' : 'Start camera scan'}
@@ -309,7 +309,7 @@ export function QRScanner({
           <button
             type="button"
             onClick={() => setShowManual((current) => !current)}
-            className="tactile flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-white px-2 py-2.5 text-xs font-semibold text-ink-primary hover:bg-obsidian"
+            className="kavach-secondary-action tactile w-full px-2 text-xs"
           >
             <ScanLine size={16} /> Paste UPI link
           </button>
@@ -320,7 +320,7 @@ export function QRScanner({
               fileInputRef.current?.click();
             }}
             disabled={qrUploading || scanning}
-            className="tactile flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-white px-2 py-2.5 text-xs font-semibold text-ink-primary hover:bg-obsidian disabled:opacity-50"
+            className="kavach-secondary-action tactile w-full px-2 text-xs disabled:opacity-50"
           >
             {qrUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
             {qrUploading ? 'Reading…' : 'Upload QR image'}
@@ -347,7 +347,7 @@ export function QRScanner({
       </div>
 
       {showManual && !scanning && (
-        <div className="space-y-3 rounded-2xl border border-border bg-surface p-4 shadow-card">
+        <div className="kavach-card space-y-3 p-4">
           <div>
             <h3 className="text-sm font-bold text-ink-primary">Paste payment link</h3>
             <p className="mt-1 text-xs text-ink-muted">Paste the UPI URI from a QR or payment request.</p>

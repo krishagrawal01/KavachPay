@@ -1,11 +1,12 @@
 {
-  "name": "KavachPay Shield",
+  "name": "Kavach — Payment Safety",
+  "description": "Review UPI payment requests, QR codes and suspicious messages before you continue.",
   "short_name": "KavachPay",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#08090C",
-  "theme_color": "#08090C",
+  "background_color": "#F5F7FB",
+  "theme_color": "#F5F7FB",
   "orientation": "portrait",
   "icons": [
     {
@@ -25,6 +26,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/kavach-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }

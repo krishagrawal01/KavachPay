@@ -19,15 +19,15 @@ const TABS: {
 
 export function TabBar({ active, onChange }: TabBarProps) {
   const selectedTab =
-    active === 'mule' || active === 'adaptive' || active === 'accuracy' || active === 'truthtrace' ? 'tools' : active;
+    active === 'mule' || active === 'adaptive' || active === 'accuracy' || active === 'truthtrace'
+      ? 'tools'
+      : active;
 
   return (
     <nav
       aria-label="Main navigation"
-      className="relative z-40 shrink-0 border-t border-border bg-white/95 px-3 pt-2 backdrop-blur-md"
-      style={{
-        paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
-      }}
+      className="relative z-40 shrink-0 border-t border-border bg-white px-2 pt-1.5"
+      style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
     >
       <div className="grid grid-cols-3 gap-1">
         {TABS.map((tab) => {
@@ -40,15 +40,14 @@ export function TabBar({ active, onChange }: TabBarProps) {
               type="button"
               onClick={() => onChange(tab.key)}
               aria-current={selected ? 'page' : undefined}
-              className={`tactile flex min-h-[54px] flex-col items-center justify-center gap-1.5 rounded-2xl px-2 py-2 transition-colors ${
+              className={
                 selected
-                  ? 'bg-brand-pale text-brand-blue'
-                  : 'text-ink-muted hover:bg-obsidian hover:text-ink-primary'
-              }`}
+                  ? 'tactile relative flex min-h-[58px] flex-col items-center justify-center gap-1.5 rounded-xl px-1.5 py-2 text-brand-blue transition-colors after:absolute after:inset-x-7 after:top-0 after:h-[3px] after:rounded-full after:bg-brand-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50'
+                  : 'tactile relative flex min-h-[58px] flex-col items-center justify-center gap-1.5 rounded-xl px-1.5 py-2 text-ink-muted transition-colors hover:bg-obsidian/70 hover:text-ink-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/50'
+              }
             >
-              <Icon size={19} strokeWidth={selected ? 2.4 : 2} />
-
-              <span className="text-[11px] font-semibold leading-none">
+              <Icon size={20} strokeWidth={selected ? 2.3 : 1.9} aria-hidden="true" />
+              <span className={selected ? 'text-[11px] font-bold leading-tight' : 'text-[11px] font-medium leading-tight'}>
                 {tab.label}
               </span>
             </button>

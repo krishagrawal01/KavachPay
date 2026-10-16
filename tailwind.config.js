@@ -34,8 +34,13 @@ export default {
         sans: ['Inter', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
+      borderRadius: {
+        xl: '0.75rem',
+        '2xl': '0.875rem',
+        '3xl': '1.125rem',
+      },
       boxShadow: {
-        card: '0 8px 24px rgba(15, 23, 42, 0.06)',
+        card: '0 1px 3px rgba(15, 23, 42, 0.045)',
         floating: '0 16px 42px rgba(15, 23, 42, 0.12)',
       },
       animation: {

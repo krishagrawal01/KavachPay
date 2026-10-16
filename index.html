@@ -2,74 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/icon-192.png" />
+    <link rel="icon" type="image/svg+xml" href="/kavach-mark.svg" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#08090C" />
+    <meta name="theme-color" content="#F5F7FB" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="KavachPay" />
-    <title>KAVACH // UPI INTENT GUARD</title>
-    <meta property="og:image" content="https://bolt.new/static/og_default.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
+    <title>Kavach | Payment Safety</title>
+    <meta name="description" content="Review UPI payment requests, QR codes and suspicious messages before you continue." />
+    <meta property="og:title" content="Kavach | Payment Safety" />
+    <meta property="og:description" content="A clearer way to review payment requests and spot warning signs." />
+    <meta name="twitter:card" content="summary" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <script>
-      // Dynamically generate valid PNG icons via canvas as a guaranteed fallback
-      // if the static files in /public ever fail to serve
-      (function () {
-        function generateIconPng(size) {
-          var canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
-          var ctx = canvas.getContext('2d');
-          // Obsidian background
-          ctx.fillStyle = '#08090C';
-          ctx.fillRect(0, 0, size, size);
-          // Rounded rect background
-          var m = size * 0.1;
-          var r = size * 0.22;
-          var w = size - 2 * m;
-          var h = size - 2 * m;
-          ctx.fillStyle = '#111318';
-          ctx.beginPath();
-          ctx.moveTo(m + r, m);
-          ctx.arcTo(m + w, m, m + w, m + h, r);
-          ctx.arcTo(m + w, m + h, m, m + h, r);
-          ctx.arcTo(m, m + h, m, m, r);
-          ctx.arcTo(m, m, m + w, m, r);
-          ctx.closePath();
-          ctx.fill();
-          // Green shield
-          ctx.fillStyle = '#00E599';
-          var sx = size * 0.5;
-          var sy = size * 0.46;
-          var sw = size * 0.2;
-          var sh = size * 0.28;
-          ctx.beginPath();
-          ctx.moveTo(sx, sy - sh * 0.5);
-          ctx.quadraticCurveTo(sx + sw, sy - sh * 0.5, sx + sw, sy - sh * 0.2);
-          ctx.lineTo(sx + sw, sy + sh * 0.15);
-          ctx.quadraticCurveTo(sx + sw * 0.5, sy + sh * 0.5, sx, sy + sh * 0.5);
-          ctx.quadraticCurveTo(sx - sw * 0.5, sy + sh * 0.5, sx - sw, sy + sh * 0.15);
-          ctx.lineTo(sx - sw, sy - sh * 0.2);
-          ctx.quadraticCurveTo(sx - sw, sy - sh * 0.5, sx, sy - sh * 0.5);
-          ctx.closePath();
-          ctx.fill();
-          var dataUrl = canvas.toDataURL('image/png');
-          return dataUrl;
-        }
-        // Store in global scope so the app can use them if needed
-        window.__kavachIcons = {
-          192: generateIconPng(192),
-          512: generateIconPng(512),
-        };
-      })();
-    </script>
   </head>
   <body>
     <div id="root"></div>
