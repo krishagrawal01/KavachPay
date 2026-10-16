@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Languages } from 'lucide-react';
+import { LANGUAGES, useI18n } from '@/lib/i18n';
 import {
   CheckCircle2,
   Download,
@@ -41,6 +43,8 @@ export function AppHeader({ muted, onToggleMute, onToggleJudgePanel }: AppHeader
   const [isInstalled, setIsInstalled] = useState(false);
   const [showInstallHelp, setShowInstallHelp] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [showLanguages, setShowLanguages] = useState(false);
+  const { language, setLanguage, t } = useI18n();
 
   useEffect(() => {
     const updateInstalledState = () => setIsInstalled(isRunningInstalled());
@@ -106,20 +110,52 @@ export function AppHeader({ muted, onToggleMute, onToggleJudgePanel }: AppHeader
           </div>
           <div className="min-w-0">
             <div className="text-[17px] font-extrabold leading-tight tracking-tight text-ink-primary">Kavach</div>
-            <div className="mt-0.5 text-[11px] font-medium text-ink-muted">Payment safety</div>
+            <div className="mt-0.5 text-[11px] font-medium text-ink-muted">{t('paymentSafety')}</div>
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowLanguages((open) => !open)}
+              aria-label={t('language')}
+              aria-expanded={showLanguages}
+              title={t('language')}
+              className="tactile flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-ink-muted hover:bg-obsidian hover:text-ink-primary"
+            >
+              <Languages size={18} />
+            </button>
+            {showLanguages && (
+              <div className="absolute right-0 top-[calc(100%+0.5rem)] z-50 max-h-[65vh] w-56 overflow-y-auto rounded-xl border border-border bg-white p-1.5 shadow-floating" role="listbox" aria-label={t('language')}>
+                {LANGUAGES.map((item) => (
+                  <button
+                    key={item.code}
+                    type="button"
+                    role="option"
+                    aria-selected={language === item.code}
+                    onClick={() => {
+                      setLanguage(item.code);
+                      setShowLanguages(false);
+                    }}
+                    className={language === item.code ? 'flex min-h-11 w-full items-center justify-between rounded-lg bg-brand-pale px-3 py-2 text-left text-sm font-bold text-brand-blue' : 'flex min-h-11 w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-ink-primary hover:bg-obsidian'}
+                  >
+                    <span>{item.nativeName}</span>
+                    <span className="text-xs text-ink-dim">{item.englishName}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button
             type="button"
             onClick={() => void handleInstall()}
-            aria-label={isInstalled ? 'View app installation status' : 'Install Kavach'}
-            title={isInstalled ? 'Kavach is installed' : 'Install Kavach'}
+            aria-label={isInstalled ? t('installed') : t('installApp')}
+            title={isInstalled ? t('installed') : t('installApp')}
             className="tactile flex h-9 items-center gap-1.5 rounded-lg border border-border bg-brand-pale px-2.5 py-2 text-[11px] font-bold text-brand-blue transition-colors hover:bg-blue-100"
           >
             {isInstalled ? <CheckCircle2 size={15} /> : <Download size={15} />}
-            <span>{isInstalled ? 'Installed' : 'Install app'}</span>
+            <span>{isInstalled ? t('installed') : t('installApp')}</span>
           </button>
 
           <button
