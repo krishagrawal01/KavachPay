@@ -39,14 +39,10 @@ export function TruthTraceMark(props: KavachIconProps) {
     <BaseIcon {...props}>
       <path d="M5.2 4.7v5.1a3.1 3.1 0 0 0 3.1 3.1h4.2a3.1 3.1 0 0 1 3.1 3.1v2.7" />
       <path d="M12.4 6.6h5.2m-2.1-2.1 2.1 2.1-2.1 2.1" />
-      <circle cx="5.2" cy="4.7" r="2.1" fill="white" />
-      <circle cx="5.2" cy="4.7" r="2.1" />
-      <circle cx="12.4" cy="6.6" r="2.1" fill="white" />
-      <circle cx="12.4" cy="6.6" r="2.1" />
-      <circle cx="15.6" cy="18.8" r="2.1" fill="white" />
-      <circle cx="15.6" cy="18.8" r="2.1" />
-      <circle cx="5.2" cy="19.3" r="2.1" fill="white" />
-      <circle cx="5.2" cy="19.3" r="2.1" />
+      <circle cx="5.2" cy="4.7" r="1.9" fill="currentColor" stroke="none" />
+      <circle cx="12.4" cy="6.6" r="1.9" fill="currentColor" stroke="none" />
+      <circle cx="15.6" cy="18.8" r="1.9" fill="currentColor" stroke="none" />
+      <circle cx="5.2" cy="19.3" r="1.9" fill="currentColor" stroke="none" />
       <path d="M5.2 16v1.2" />
     </BaseIcon>
   );
@@ -57,18 +53,12 @@ export function PatternMemoryMark(props: KavachIconProps) {
   return (
     <BaseIcon {...props}>
       <path d="M12 5.2v13.5M6.3 8.2l5.7 3.4 5.7-3.4M6.3 15.8l5.7-4.2 5.7 4.2" />
-      <circle cx="12" cy="4" r="2.2" fill="white" />
-      <circle cx="12" cy="4" r="2.2" />
-      <circle cx="5" cy="7.4" r="2.2" fill="white" />
-      <circle cx="5" cy="7.4" r="2.2" />
-      <circle cx="19" cy="7.4" r="2.2" fill="white" />
-      <circle cx="19" cy="7.4" r="2.2" />
-      <circle cx="5" cy="16.8" r="2.2" fill="white" />
-      <circle cx="5" cy="16.8" r="2.2" />
-      <circle cx="19" cy="16.8" r="2.2" fill="white" />
-      <circle cx="19" cy="16.8" r="2.2" />
-      <circle cx="12" cy="20" r="2" fill="white" />
-      <circle cx="12" cy="20" r="2" />
+      <circle cx="12" cy="4" r="2.1" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="7.4" r="2.1" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="7.4" r="2.1" fill="currentColor" stroke="none" />
+      <circle cx="5" cy="16.8" r="2.1" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="16.8" r="2.1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="20" r="1.9" fill="currentColor" stroke="none" />
     </BaseIcon>
   );
 }
