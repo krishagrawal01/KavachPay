@@ -23,6 +23,7 @@ import {
   type TraceInput,
   type TraceResult,
 } from '@/lib/truthTrace';
+import { useI18n } from '@/lib/i18n';
 
 type Fixture = {
   id: string;
@@ -183,6 +184,7 @@ function ReplayCard({ result, label, highlighted = false }: CardProps) {
 
 /** A self-contained investigation lab; never opens a payment app. */
 export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
+  const { t } = useI18n();
   const [fixture, setFixture] = useState(initialInput ? 'custom' : 'qr');
   const [form, setForm] = useState<TraceInput>(initialInput ? { ...EMPTY_INPUT, ...initialInput } : { ...FIXTURES[3].input });
   const [submitted, setSubmitted] = useState<TraceInput>(initialInput ? { ...EMPTY_INPUT, ...initialInput } : { ...FIXTURES[3].input });
@@ -409,7 +411,7 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
     <div className="space-y-3 pb-6">
       <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-blue-950 to-blue-700 px-4 py-4 text-white shadow-card">
         <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-blue-200"><Sparkles size={15} /> KAVACHPAY / TRUTHTRACE 3.1 — INVESTIGATION REPORT</div>
-        <h1 className="mt-2 text-xl font-extrabold leading-tight">Explain what the payment actually requests.</h1>
+        <h1 className="mt-2 text-xl font-extrabold leading-tight">{t("truthTraceHeadline")}</h1>
         <p className="mt-1 text-xs leading-relaxed text-blue-100">A detailed evidence report linked to your main checker, plus one tampered-QR demonstration with a one-click replay.</p>
       </header>
 
@@ -422,15 +424,15 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
       )}
       {fixture === 'qr' && (
         <section aria-label="Featured demonstration" className="rounded-2xl border border-border bg-white p-4 shadow-card">
-          <div className="flex items-center gap-2"><ShieldCheck size={18} className="text-blue-700" /><h2 className="text-sm font-extrabold text-slate-900">One featured demo · Tampered shop QR</h2></div>
+          <div className="flex items-center gap-2"><ShieldCheck size={18} className="text-blue-700" /><h2 className="text-sm font-extrabold text-slate-900">{t("featuredTamperedQr")}</h2></div>
           <p className="mt-2 text-xs leading-relaxed text-slate-600">A fictional café displays a legitimate-looking merchant name but the scanned payment URI points to a different UPI ID. The “trusted” reference is supplied for this demo, not verified by any bank.</p>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="min-w-0 rounded-xl bg-slate-50 p-2.5"><p className="text-[10px] font-bold text-slate-500">Expected recipient</p><p className="mt-1 break-all font-mono text-[11px] font-bold text-slate-900">riverside-cafe@demo</p></div>
             <div className="min-w-0 rounded-xl bg-rose-50 p-2.5"><p className="text-[10px] font-bold text-rose-700">QR destination</p><p className="mt-1 break-all font-mono text-[11px] font-bold text-rose-900">counter-collector@demo</p></div>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <button type="button" onClick={() => selectScenario('qr')} className="min-h-12 rounded-xl border border-blue-200 bg-blue-50 px-2 py-2 text-xs font-extrabold text-blue-900">Reset fraudulent case</button>
-            <button type="button" onClick={showMatchingReplay} className="min-h-12 rounded-xl bg-blue-700 px-2 py-2 text-xs font-extrabold text-white">Show corrected payment ↗</button>
+            <button type="button" onClick={() => selectScenario('qr')} className="min-h-12 rounded-xl border border-blue-200 bg-blue-50 px-2 py-2 text-xs font-extrabold text-blue-900">{t("resetFraudCase")}</button>
+            <button type="button" onClick={showMatchingReplay} className="min-h-12 rounded-xl bg-blue-700 px-2 py-2 text-xs font-extrabold text-white">{t("showCorrectedPayment")} ↗</button>
           </div>
           <p className="mt-2 text-[11px] text-slate-500">The corrected side is a what-if simulation. It does not initiate a transaction or establish who owns an account.</p>
         </section>
@@ -472,12 +474,12 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
       )}
       {edited && (
         <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-xs font-semibold leading-relaxed text-amber-900">
-          Changes have not been analysed yet. The previous verdict has been cleared. Open “Edit investigation evidence (advanced)” and press “Run TruthTrace analysis” to evaluate your current message and supplied payment information.
+          Changes have not been analysed yet. The previous verdict has been cleared. Open “{t("editInvestigationAdvanced")}” and press “{t("runTruthTrace")}” to evaluate your current message and supplied payment information.
         </div>
       )}
       {!hasAnalysed && (
         <div role="status" className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">
-          <strong>Not analysed yet.</strong> Finish entering your evidence and press “Run TruthTrace analysis” below. No previous verdict is being shown for this draft.
+          <strong>Not analysed yet.</strong> Finish entering your evidence and press “{t("runTruthTrace")}” below. No previous verdict is being shown for this draft.
         </div>
       )}
       {hasAnalysed && !edited && (
@@ -562,7 +564,7 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
       <section aria-label="Guided demonstration" className="rounded-2xl border border-border bg-white p-4 shadow-card">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wide text-blue-700">Guided live demonstration</p>
+            <p className="text-[10px] font-bold uppercase tracking-wide text-blue-700">{t("guidedDemo")}</p>
             <h2 className="mt-0.5 text-base font-extrabold text-slate-900">{CHAPTERS[chapter].title}</h2>
             <p className="text-xs text-slate-500">{CHAPTERS[chapter].subtitle}</p>
           </div>
@@ -577,21 +579,21 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
         <div className="mt-4 min-h-[132px]">{chapterBody}</div>
         <div className="mt-4 flex gap-2 border-t border-slate-100 pt-3">
           {chapter > 0 ? (
-            <button type="button" onClick={() => setChapter(i => Math.max(0, i - 1))} className="flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-slate-200 text-sm font-bold text-slate-700"><ArrowLeft size={15} /> Back</button>
+            <button type="button" onClick={() => setChapter(i => Math.max(0, i - 1))} className="flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-slate-200 text-sm font-bold text-slate-700"><ArrowLeft size={15} /> {t("back")}</button>
           ) : (
-            <button type="button" onClick={restart} className="flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-slate-200 text-sm font-bold text-slate-700"><RefreshCw size={15} /> Restart</button>
+            <button type="button" onClick={restart} className="flex min-h-11 flex-1 items-center justify-center gap-1 rounded-xl border border-slate-200 text-sm font-bold text-slate-700"><RefreshCw size={15} /> {t("restart")}</button>
           )}
           {chapter < CHAPTERS.length - 1 ? (
-            <button type="button" onClick={() => setChapter(i => Math.min(CHAPTERS.length - 1, i + 1))} className="flex min-h-11 flex-[1.4] items-center justify-center gap-1 rounded-xl bg-blue-700 px-3 text-sm font-extrabold text-white">Next step <ArrowRight size={16} /></button>
+            <button type="button" onClick={() => setChapter(i => Math.min(CHAPTERS.length - 1, i + 1))} className="flex min-h-11 flex-[1.4] items-center justify-center gap-1 rounded-xl bg-blue-700 px-3 text-sm font-extrabold text-white">{t("nextStep")} <ArrowRight size={16} /></button>
           ) : (
-            <button type="button" onClick={restart} className="flex min-h-11 flex-[1.4] items-center justify-center gap-1 rounded-xl bg-blue-700 px-3 text-sm font-extrabold text-white">Restart demo <RefreshCw size={16} /></button>
+            <button type="button" onClick={restart} className="flex min-h-11 flex-[1.4] items-center justify-center gap-1 rounded-xl bg-blue-700 px-3 text-sm font-extrabold text-white">{t("restartDemo")} <RefreshCw size={16} /></button>
           )}
         </div>
       </section>
 
       <section className="overflow-hidden rounded-2xl border border-border bg-white shadow-card">
         <button type="button" onClick={() => setShowEvidence(v => !v)} aria-expanded={showEvidence} className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-3 text-left">
-          <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><GitBranch size={17} className="text-blue-700" /> Full evidence chain <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">{result.steps.length} steps</span></span>
+          <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><GitBranch size={17} className="text-blue-700" /> {t("fullEvidenceChain")} <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">{result.steps.length} steps</span></span>
           <ChevronDown size={17} className={`text-slate-500 transition-transform ${showEvidence ? 'rotate-180' : ''}`} />
         </button>
         {showEvidence && <div className="border-t border-slate-100 p-3"><EvidenceChain result={result} /></div>}
@@ -606,7 +608,7 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
 
       <section ref={editorRef} style={{ scrollMarginTop: '5.5rem' }} className="overflow-hidden rounded-2xl border border-border bg-white shadow-card">
         <button type="button" onClick={() => setShowEditor(v => !v)} aria-expanded={showEditor} className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-3 text-left">
-          <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><Play size={16} className="text-blue-700" /> Edit investigation evidence (advanced)</span>
+          <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><Play size={16} className="text-blue-700" /> {t("editInvestigationAdvanced")}</span>
           <ChevronDown size={17} className={`text-slate-500 transition-transform ${showEditor ? 'rotate-180' : ''}`} />
         </button>
         {showEditor && (
@@ -657,7 +659,7 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
             </div>
             <p className="text-[11px] leading-relaxed text-slate-500">Use a recipient reference obtained independently. TruthTrace cannot verify bank ownership.</p>
             {edited && <p className="text-xs font-semibold text-amber-800">You have edits that are not yet analysed.</p>}
-            <button type="submit" className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-700 text-sm font-extrabold text-white"><Play size={16} /> Run TruthTrace analysis</button>
+            <button type="submit" className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-700 text-sm font-extrabold text-white"><Play size={16} /> {t("runTruthTrace")}</button>
           </form>
         )}
       </section>

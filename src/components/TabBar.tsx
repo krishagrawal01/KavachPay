@@ -1,6 +1,7 @@
 import { ScanLine, Link2, Grid2X2 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { TabKey } from '@/lib/types';
+import { useI18n } from '@/lib/i18n';
 
 interface TabBarProps {
   active: TabKey;
@@ -9,15 +10,16 @@ interface TabBarProps {
 
 const TABS: {
   key: 'scanner' | 'links' | 'tools';
-  label: string;
+  label: 'scanQr' | 'smsLink' | 'moreTools';
   icon: LucideIcon;
 }[] = [
-  { key: 'scanner', label: 'Scan QR', icon: ScanLine },
-  { key: 'links', label: 'Check SMS/Link', icon: Link2 },
-  { key: 'tools', label: 'More tools', icon: Grid2X2 },
+  { key: 'scanner', label: 'scanQr', icon: ScanLine },
+  { key: 'links', label: 'smsLink', icon: Link2 },
+  { key: 'tools', label: 'moreTools', icon: Grid2X2 },
 ];
 
 export function TabBar({ active, onChange }: TabBarProps) {
+  const { t } = useI18n();
   const selectedTab =
     active === 'mule' || active === 'adaptive' || active === 'accuracy' || active === 'truthtrace'
       ? 'tools'
@@ -48,7 +50,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
             >
               <Icon size={20} strokeWidth={selected ? 2.3 : 1.9} aria-hidden="true" />
               <span className={selected ? 'text-[11px] font-bold leading-tight' : 'text-[11px] font-medium leading-tight'}>
-                {tab.label}
+                {t(tab.label)}
               </span>
             </button>
           );

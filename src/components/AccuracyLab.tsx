@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, BarChart3, CheckCircle2, FlaskConical, Plus, ShieldAlert, Trash2 } from 'lucide-react';
 import { evaluateSamples, evaluationFixtures, type EvaluationExample, type EvaluationMetrics, type ExampleLabel } from '@/lib/accuracyLab';
+import { useI18n } from '@/lib/i18n';
 
 type Category = 'all' | 'mistakes' | 'ordinary' | 'suspicious';
 function fmt(value: number|null) { return value === null ? 'N/A' : `${(value * 100).toFixed(1)}%`; }
@@ -24,6 +25,7 @@ function Matrix({data}:{data:EvaluationMetrics}) {
 }
 
 export function AccuracyLab({onBack}:{onBack:()=>void}) {
+  const { t } = useI18n();
   const [custom,setCustom]=useState<EvaluationExample[]>([]);
   const [message,setMessage]=useState('');
   const [label,setLabel]=useState<ExampleLabel>('ordinary');
@@ -42,10 +44,10 @@ export function AccuracyLab({onBack}:{onBack:()=>void}) {
     setShowAll(true);
   };
   return <div className="space-y-4 pb-5">
-    <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-bold text-blue-700 hover:bg-blue-50"><ArrowLeft size={17}/> Back to tools</button>
+    <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-bold text-blue-700 hover:bg-blue-50"><ArrowLeft size={17}/> {t("backToTools")}</button>
     <header className="rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-4 shadow-sm">
       <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-blue-700"><BarChart3 size={17}/> Accuracy Lab · Development benchmark</div>
-      <h1 className="mt-1 text-2xl font-extrabold text-slate-900">Measure mistakes, not just scores</h1>
+      <h1 className="mt-1 text-2xl font-extrabold text-slate-900">{t('accuracyHeadline')}</h1>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">Compare a deliberately simple keyword baseline with KavachPay's context-aware SMS warning rules. Metrics are recalculated locally from labeled examples.</p>
     </header>
     <div className="rounded-2xl border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
@@ -58,7 +60,7 @@ export function AccuracyLab({onBack}:{onBack:()=>void}) {
       <Metric label="Overall test accuracy" value={fmt(report.context.accuracy)} hint={`${all.length} labeled development examples`}/>
     </div>
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-      <h2 className="text-base font-extrabold text-slate-900">Keyword baseline vs context rules</h2>
+      <h2 className="text-base font-extrabold text-slate-900">{t('keywordBaseline')}</h2>
       <div className="grid grid-cols-3 gap-2 text-[11px] font-semibold text-slate-700">
         <div>Metric</div><div className="text-right">Keyword only</div><div className="text-right">Context-aware</div>
       </div>
@@ -69,19 +71,19 @@ export function AccuracyLab({onBack}:{onBack:()=>void}) {
     </section>
     <Matrix data={report.context}/>
     <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-center gap-2"><FlaskConical size={18} className="text-blue-700"/><h2 className="text-base font-extrabold text-slate-900">Try your own labeled message</h2></div>
+      <div className="flex items-center gap-2"><FlaskConical size={18} className="text-blue-700"/><h2 className="text-base font-extrabold text-slate-900">{t('tryOwnMessage')}</h2></div>
       <p className="text-xs leading-relaxed text-slate-600">Add a message with your expected label to see if the alert system agrees. No message is uploaded; added examples disappear when you reload. Remove phone numbers, OTPs and other private information first.</p>
       <label className="block text-xs font-bold text-slate-700" htmlFor="accuracy-message">SMS text</label>
       <textarea id="accuracy-message" value={message} onChange={e=>setMessage(e.target.value)} rows={3} maxLength={3000} placeholder="Paste a fictional or de-identified SMS" className="w-full resize-y rounded-xl border border-slate-300 p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500" />
       <label className="block text-xs font-bold text-slate-700" htmlFor="accuracy-label">Your manually reviewed label</label>
       <select id="accuracy-label" value={label} onChange={e=>setLabel(e.target.value as ExampleLabel)} className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900"><option value="ordinary">Ordinary / non-scam scenario</option><option value="suspicious">Suspicious / scam scenario</option></select>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={addCustom} disabled={!message.trim() || custom.length >= 50} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-extrabold text-white disabled:opacity-40"><Plus size={17}/> Add and evaluate</button>
+        <button type="button" onClick={addCustom} disabled={!message.trim() || custom.length >= 50} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-extrabold text-white disabled:opacity-40"><Plus size={17}/> {t("addEvaluate")}</button>
         {custom.length>0 && <button type="button" onClick={()=>{setCustom([]);setFilter('mistakes');}} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"><Trash2 size={15}/> Reset ({custom.length})</button>}
       </div>
     </section>
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-      <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-base font-extrabold text-slate-900">Test-case review</h2><span className="text-[11px] text-slate-500">{viewed.length} cases</span></div>
+      <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-base font-extrabold text-slate-900">{t('testCaseReview')}</h2><span className="text-[11px] text-slate-500">{viewed.length} cases</span></div>
       <div className="flex flex-wrap gap-1.5">
         {([['mistakes','Mistakes'],['all','All'],['suspicious','Labeled suspicious'],['ordinary','Labeled ordinary']] as const).map(([value,text])=><button key={value} type="button" onClick={()=>{setFilter(value);setShowAll(value==='mistakes');}} className={`rounded-full px-3 py-2 text-[11px] font-bold ${filter===value?'bg-blue-700 text-white':'bg-slate-100 text-slate-700'}`}>{text}</button>)}
       </div>

@@ -42,6 +42,7 @@ import {
   type SyncPayload,
 } from '@/lib/sync';
 import type { TraceInput } from '@/lib/truthTrace';
+import { useI18n } from '@/lib/i18n';
 import type {
   ParsedUPI,
   RiskAssessment,
@@ -58,6 +59,7 @@ const DEFAULT_TELEMETRY: TelemetryState = {
 };
 
 function App() {
+  const { t } = useI18n();
   const [telemetry, setTelemetry] = useState<TelemetryState>(DEFAULT_TELEMETRY);
   const [rawUri, setRawUri] = useState('');
   const [parsed, setParsed] = useState<ParsedUPI | null>(null);
@@ -414,17 +416,17 @@ function App() {
                 <div className="max-w-md">
                   <div className="kavach-section-label flex items-center gap-2">
                     <ShieldCheck size={15} strokeWidth={2.3} />
-                    Payment protection
+                    {t("paymentSafety")}
                   </div>
                   <h1 className="mt-2.5 max-w-[330px] text-[27px] font-bold leading-[1.12] tracking-[-0.035em] text-ink-primary">
-                    Check before you pay.
+                    {t("homeTitle")}
                   </h1>
                   <p className="mt-2 max-w-[340px] text-[14px] leading-6 text-ink-muted">
-                    Scan a UPI QR to review the payment request before you continue.
+                    {t("homeDescription")}
                   </p>
                   <div className="mt-3 flex items-center gap-2 text-[12px] font-medium text-ink-muted">
                     <span className="h-2 w-2 shrink-0 rounded-full bg-npcigreen" />
-                    On-device checks · AI when available
+                    {t("localChecksAi")}
                   </div>
                 </div>
               </section>
@@ -484,13 +486,13 @@ function App() {
           <section className="space-y-5 px-5 py-5 sm:px-6">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.12em] text-brand-blue">
-                More from Kavach
+                {t("toolsEyebrow")}
               </p>
               <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-ink-primary">
-                Tools & insights
+                {t("toolsTitle")}
               </h1>
               <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                Open a detailed payment report, train browser-only warning rules, or explore an illustrative fund-flow network.
+                {t("toolsDescription")}
               </p>
             </div>
 
@@ -503,8 +505,8 @@ function App() {
                 <GitBranch size={23} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-2 text-sm font-extrabold text-ink-primary">TruthTrace report <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-700">DEMO</span></span>
-                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">One featured tampered-QR example · evidence chain · before/after replay</span>
+                <span className="flex items-center gap-2 text-sm font-extrabold text-ink-primary">{t("truthTraceReport")} <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-700">{t("demo")}</span></span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">{t("truthTraceDescription")}</span>
               </span>
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
@@ -518,8 +520,8 @@ function App() {
                 <BrainCircuit size={22} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-bold text-ink-primary">Scam pattern memory</span>
-                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Approve and test local browser-only signature rules.</span>
+                <span className="block text-sm font-bold text-ink-primary">{t("patternMemory")}</span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">{t("patternMemoryDescription")}</span>
               </span>
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
@@ -531,15 +533,15 @@ function App() {
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700"><BarChart3 size={22}/></span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-bold text-ink-primary">Accuracy Lab <span className="ml-1 text-[10px] text-violet-700">NEW</span></span>
-                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Measure errors on synthetic cases; compare context rules against simple keywords.</span>
+                <span className="block text-sm font-bold text-ink-primary">{t("accuracyLab")} <span className="ml-1 text-[10px] text-violet-700">{t("new")}</span></span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">{t("accuracyLabDescription")}</span>
               </span>
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
 
             <details className="group rounded-xl border border-border bg-white">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-ink-primary">
-                Additional educational visualisations
+                {t("additionalVisualisations")}
                 <ChevronRight size={17} className="text-ink-muted transition-transform group-open:rotate-90" />
               </summary>
               <div className="border-t border-border p-2">
@@ -552,8 +554,8 @@ function App() {
                 <Network size={22} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-bold text-ink-primary">Fund-flow network</span>
-                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Illustrative network only — no bank transaction data.</span>
+                <span className="block text-sm font-bold text-ink-primary">{t("fundFlowNetwork")}</span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">{t("fundFlowDescription")}</span>
               </span>
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
@@ -565,7 +567,7 @@ function App() {
               <div className="flex items-start gap-3">
                 <FlaskConical size={18} className="mt-0.5 text-brand-blue" />
                 <div>
-                  <p className="text-sm font-bold text-ink-primary">Hackathon demo mode</p>
+                  <p className="text-sm font-bold text-ink-primary">{t("hackathonDemoMode")}</p>
                   <p className="mt-1 text-xs leading-relaxed text-ink-muted">
                     Use the settings button above for prepared scam scenarios and simulated device signals. These are demo controls, not live Android system detection.
                   </p>
@@ -575,7 +577,7 @@ function App() {
                     className="mt-3 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-3.5 py-2.5 text-xs font-bold text-white hover:brightness-105"
                   >
                     <Sparkles size={14} />
-                    Open demo controls
+                    {t("openDemoControls")}
                   </button>
                 </div>
               </div>

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
 import type { ShopAnalysisResult } from '@/lib/gemini';
+import { useI18n } from '@/lib/i18n';
 
 interface QRScannerProps {
   onResult: (text: string) => void;
@@ -38,6 +39,7 @@ export function QRScanner({
   geminiKey,
   qrPayeeName,
 }: QRScannerProps) {
+  const { t } = useI18n();
   const [scanning, setScanning] = useState(false);
   const [manualInput, setManualInput] = useState('');
   const [showManual, setShowManual] = useState(false);
@@ -118,9 +120,9 @@ export function QRScanner({
       const lower = message.toLowerCase();
 
       if (lower.includes('notallowed') || lower.includes('permission') || lower.includes('denied')) {
-        setCameraError('Camera permission is blocked. Allow Camera for this site in Chrome settings, then try again.');
+        setCameraError(t('cameraPermissionError'));
       } else if (lower.includes('notfound') || lower.includes('no camera')) {
-        setCameraError('No accessible camera was found. You can upload a QR image instead.');
+        setCameraError(t('cameraUnavailable'));
       } else if (lower.includes('notreadable') || lower.includes('could not start video source')) {
         setCameraError('The camera is busy. Close other apps using it and try again.');
       } else {
@@ -183,7 +185,7 @@ export function QRScanner({
       if (mountedRef.current) onResult(text);
     } catch {
       if (mountedRef.current) {
-        setQrUploadError('We could not read a QR code from this image. Try a clearer, straight-on picture, or paste the UPI link manually.');
+        setQrUploadError(t('qrUnreadable'));
       }
     } finally {
       if (decoder) {
@@ -244,8 +246,8 @@ export function QRScanner({
     <div className="space-y-4 px-4 pb-6 pt-4 sm:px-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-ink-primary">Scan a payment QR</h2>
-          <p className="mt-1 text-sm leading-relaxed text-ink-muted">Check the payment details before you send money.</p>
+          <h2 className="text-lg font-bold tracking-tight text-ink-primary">{t("scanPaymentQr")}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-ink-muted">{t("scanDescription")}</p>
         </div>
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-pale text-brand-blue">
           <QrCode size={21} />
@@ -264,9 +266,9 @@ export function QRScanner({
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-emerald-300">
                 <QrCode size={45} strokeWidth={1.35} />
               </div>
-              <p className="text-sm font-semibold text-white">Align the QR code inside the frame</p>
+              <p className="text-sm font-semibold text-white">{t("alignQr")}</p>
               <p className="max-w-[250px] text-xs leading-relaxed text-slate-300">
-                Keep the whole code visible. We will review the payment details before you continue.
+                {t("keepCodeVisible")}
               </p>
             </div>
           )}
@@ -282,7 +284,7 @@ export function QRScanner({
                 onClick={() => void stopScanner()}
                 className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-900 shadow"
               >
-                <X size={14} /> Stop scanning
+                <X size={14} /> {t('stopScanning')}
               </button>
             </>
           )}
@@ -302,7 +304,7 @@ export function QRScanner({
           className="kavach-primary-action tactile mt-3 w-full disabled:opacity-50"
         >
           <Camera size={18} />
-          {scanning ? 'Scanning…' : 'Start camera scan'}
+          {scanning ? t('scanning') : t('startCameraScan')}
         </button>
 
         <div className="mt-2 grid grid-cols-2 gap-2">
@@ -311,7 +313,7 @@ export function QRScanner({
             onClick={() => setShowManual((current) => !current)}
             className="kavach-secondary-action tactile w-full px-2 text-xs"
           >
-            <ScanLine size={16} /> Paste UPI link
+            <ScanLine size={16} /> {t('pasteUpiLink')}
           </button>
           <button
             type="button"
@@ -323,7 +325,7 @@ export function QRScanner({
             className="kavach-secondary-action tactile w-full px-2 text-xs disabled:opacity-50"
           >
             {qrUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-            {qrUploading ? 'Reading…' : 'Upload QR image'}
+            {qrUploading ? t('readingQr') : t('uploadQrImage')}
           </button>
         </div>
 
