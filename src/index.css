@@ -238,3 +238,19 @@ summary:focus-visible {
     background: #f8fbff;
   }
 }
+
+/* One consistent stroke language for remaining utility controls. */
+.lucide {
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.lucide[width="12"],
+.lucide[width="13"],
+.lucide[width="14"],
+.lucide[width="15"] {
+  stroke-width: 1.9;
+}
+
