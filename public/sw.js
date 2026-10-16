@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kavach-v2';
+const CACHE_NAME = 'kavach-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
