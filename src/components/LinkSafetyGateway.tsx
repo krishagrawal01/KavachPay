@@ -15,6 +15,7 @@ import {
 
 import type { ParsedUPI, TelemetryState } from '@/lib/types';
 import { parseUPI, formatAmount } from '@/lib/upi';
+import { useI18n } from '@/lib/i18n';
 import { assessRisk } from '@/lib/risk';
 import { analyzeTruthTrace, screenMessage, type TraceInput } from '@/lib/truthTrace';
 import {
@@ -390,6 +391,7 @@ function resultTitle(result: AnalysisResult): string {
 }
 
 export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestigation }: Props) {
+  const { t } = useI18n();
   const [input, setInput] = useState(initialInput);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState('');
@@ -546,16 +548,16 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
   return (
     <div className="space-y-4">
       <header className="mb-1">
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-brand-blue">Payment protection</p>
-        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-ink-primary">Check a message or link</h1>
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-brand-blue">{t("paymentSafety")}</p>
+        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-ink-primary">{t("messageCheckerTitle")}</h1>
         <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-          Paste one SMS, link or UPI request here. Get quick warning signs, then open TruthTrace only when you want the full payment-evidence report.
+          {t("messageCheckerDescription")}
         </p>
       </header>
 
       <section className="space-y-3 rounded-3xl border border-border bg-surface p-4 shadow-card sm:p-5">
         <label htmlFor="kavach-link-input" className="text-sm font-semibold text-ink-primary">
-          Message or link
+          {t("messageOrLink")}
         </label>
         <textarea
           id="kavach-link-input"
@@ -567,7 +569,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
             setResult(null);
             setError('');
           }}
-          placeholder={'Paste an SMS, WhatsApp message, email, website URL or UPI payment link…'}
+          placeholder={t('messagePlaceholder')}
           rows={5}
           maxLength={12000}
           className="w-full resize-none rounded-2xl border border-border bg-obsidian px-3.5 py-3 text-sm leading-relaxed text-ink-primary outline-none placeholder:text-ink-dim focus:border-brand-blue"
@@ -581,7 +583,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
             className="tactile inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:brightness-105 disabled:opacity-60"
           >
             {mlLoading ? <Loader2 size={17} className="animate-spin" /> : <Search size={17} />}
-            {mlLoading ? 'Checking…' : 'Check for scams'}
+            {mlLoading ? t('scanning') : t('checkForScams')}
           </button>
         </div>
         {error && <p role="alert" className="text-sm text-crimson-fraud">{error}</p>}
@@ -589,7 +591,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
           <summary
             className="flex cursor-pointer list-none items-center justify-between gap-3 py-1 text-sm font-semibold text-ink-muted"
           >
-            Optional details
+            {t("optionalDetails")}
             <ChevronDown size={17} className="transition-transform group-open:rotate-180" />
           </summary>
           <div className="space-y-3 pb-1 pt-3">
@@ -910,7 +912,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
       )}
 
       <p className="px-1 text-[11px] leading-relaxed text-ink-dim">
-        Kavach is a prototype security aid, not a guarantee. It cannot automatically intercept every link in other apps, and website inspection requires separate backend support.
+        {t("privacyDisclaimer")}
       </p>
     </div>
   );
