@@ -53,7 +53,7 @@ export function WhatsAppPopup({ message, sender, onTapToScan, onDismiss }: Whats
         <div className="px-3 py-2.5">
           <div className="flex items-start gap-2.5">
             <div className="w-9 h-9 rounded-full bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0">
-              <MessageCircle size={16} className="text-[#25D366]" />
+              <MessageSafetyMark size={17} className="text-[#25D366]" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
