@@ -1,7 +1,7 @@
 {
   "name": "Kavach — Payment Safety",
   "description": "Review UPI payment requests, QR codes and suspicious messages before you continue.",
-  "short_name": "KavachPay",
+  "short_name": "Kavach",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -9,6 +9,18 @@
   "theme_color": "#F5F7FB",
   "orientation": "portrait",
   "icons": [
+    {
+      "src": "/kavach-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/kavach-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
@@ -19,18 +31,6 @@
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/kavach-mark.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]
