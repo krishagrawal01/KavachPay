@@ -144,7 +144,7 @@ export function UPIDissector({
           onClick={onReviewPayment}
           className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand-blue px-4 py-3 text-sm font-bold text-white shadow-sm hover:brightness-105"
         >
-          <ShieldCheck size={18} />
+          <KavachMark size={19} />
           Check before continuing
         </button>
       </section>
