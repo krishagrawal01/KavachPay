@@ -410,21 +410,21 @@ function App() {
         {activeTab === 'scanner' && (
           <>
             {!parsed && (
-              <section className="px-4 pb-1 pt-5 sm:px-5">
-                <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-brand-navy to-brand-blue p-5 text-white shadow-card">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-white/80">
-                    <ShieldCheck size={16} />
-                    PAYMENT SAFETY
+              <section className="px-5 pb-3 pt-5 sm:px-6">
+                <div className="max-w-md">
+                  <div className="kavach-section-label flex items-center gap-2">
+                    <ShieldCheck size={15} strokeWidth={2.3} />
+                    Payment protection
                   </div>
-                  <h1 className="mt-3 max-w-[300px] text-[25px] font-extrabold leading-[1.15] tracking-tight">
-                    Check first. Pay with confidence.
+                  <h1 className="mt-2.5 max-w-[330px] text-[27px] font-bold leading-[1.12] tracking-[-0.035em] text-ink-primary">
+                    Check before you pay.
                   </h1>
-                  <p className="mt-2 max-w-[320px] text-sm leading-relaxed text-white/80">
-                    Scan a payment QR before sending money. Kavach looks for warning signs and explains what to check.
+                  <p className="mt-2 max-w-[340px] text-[14px] leading-6 text-ink-muted">
+                    Scan a UPI QR to review the payment request before you continue.
                   </p>
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 text-[11px] font-medium text-white/90">
-                    <span className="h-2 w-2 rounded-full bg-emerald-300" />
-                    Local checks + AI when available
+                  <div className="mt-3 flex items-center gap-2 text-[12px] font-medium text-ink-muted">
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-npcigreen" />
+                    On-device checks · AI when available
                   </div>
                 </div>
               </section>
@@ -475,13 +475,13 @@ function App() {
         )}
 
         {activeTab === 'links' && (
-          <div className="px-4 py-5 sm:px-5">
+          <div className="px-5 py-5 sm:px-6">
             <LinkSafetyGateway telemetry={telemetry} initialInput={rawUri} onViewInvestigation={openInvestigation} />
           </div>
         )}
 
         {activeTab === 'tools' && (
-          <section className="space-y-4 px-4 py-5 sm:px-5">
+          <section className="space-y-5 px-5 py-5 sm:px-6">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.12em] text-brand-blue">
                 More from Kavach
@@ -497,9 +497,9 @@ function App() {
             <button
               type="button"
               onClick={openInvestigationExamples}
-              className="tactile flex w-full items-center gap-4 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-white p-4 text-left shadow-card hover:border-blue-400"
+              className="tactile flex w-full items-center gap-4 rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-blue-300"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-white">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-blue text-white">
                 <GitBranch size={23} />
               </span>
               <span className="min-w-0 flex-1">
@@ -512,9 +512,9 @@ function App() {
             <button
               type="button"
               onClick={() => setActiveTab('adaptive')}
-              className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
+              className="tactile flex w-full items-center gap-4 rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-brand-blue/40"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-npcigreen">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-npcigreen">
                 <BrainCircuit size={22} />
               </span>
               <span className="min-w-0 flex-1">
@@ -529,7 +529,7 @@ function App() {
               onClick={() => setActiveTab('accuracy')}
               className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-50 text-violet-700"><BarChart3 size={22}/></span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700"><BarChart3 size={22}/></span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-ink-primary">Accuracy Lab <span className="ml-1 text-[10px] text-violet-700">NEW</span></span>
                 <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Measure errors on synthetic cases; compare context rules against simple keywords.</span>
@@ -537,7 +537,7 @@ function App() {
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
 
-            <details className="group rounded-2xl border border-border bg-white shadow-card">
+            <details className="group rounded-xl border border-border bg-white">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-ink-primary">
                 Additional educational visualisations
                 <ChevronRight size={17} className="text-ink-muted transition-transform group-open:rotate-90" />
@@ -548,7 +548,7 @@ function App() {
               onClick={() => setActiveTab('mule')}
               className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-pale text-brand-blue">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-pale text-brand-blue">
                 <Network size={22} />
               </span>
               <span className="min-w-0 flex-1">
@@ -561,7 +561,7 @@ function App() {
               </div>
             </details>
 
-            <div className="rounded-2xl border border-dashed border-border bg-surface/70 p-4">
+            <div className="rounded-xl border border-border bg-white p-4">
               <div className="flex items-start gap-3">
                 <FlaskConical size={18} className="mt-0.5 text-brand-blue" />
                 <div>
