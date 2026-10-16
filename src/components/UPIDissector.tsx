@@ -10,6 +10,7 @@ import {
 
 import type { ParsedUPI, RiskAssessment } from '@/lib/types';
 import { formatAmount, maskVpa } from '@/lib/upi';
+import { useI18n } from '@/lib/i18n';
 
 interface UPIDissectorProps {
   parsed: ParsedUPI;
@@ -22,6 +23,7 @@ export function UPIDissector({
   assessment,
   onReviewPayment,
 }: UPIDissectorProps) {
+  const { t } = useI18n();
   const [showDetails, setShowDetails] = useState(false);
 
   const isMerchantCodePresent = Boolean(
@@ -45,7 +47,7 @@ export function UPIDissector({
         className="inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-semibold text-brand-blue hover:bg-brand-pale"
       >
         <ArrowDownRight size={17} />
-        Back to safety review
+        {t('backSafetyReview')}
       </button>
 
       <section className={`rounded-3xl border p-4 shadow-card ${tone}`}>
@@ -61,15 +63,14 @@ export function UPIDissector({
           <div className="min-w-0 flex-1">
             <p className="text-base font-extrabold">
               {isCritical
-                ? 'High-risk payment details'
+                ? t('highRiskDetails')
                 : isLocalSafe
-                  ? 'No major local warning signs'
-                  : 'Review this payment carefully'}
+                  ? t('noMajorWarnings')
+                  : t('reviewCarefully')}
             </p>
 
             <p className="mt-1 text-sm leading-relaxed opacity-90">
-              These are preliminary on-device checks only. Run the full
-              safety check before opening a payment app.
+              {t("preliminaryChecks")}
             </p>
           </div>
         </div>
@@ -77,7 +78,7 @@ export function UPIDissector({
         <div className="mt-4 flex items-end justify-between gap-3 rounded-2xl bg-white/70 p-3">
           <div>
             <p className="text-xs font-semibold opacity-75">
-              Local risk score
+              {t("localRiskScore")}
             </p>
 
             <p className="mt-0.5 text-2xl font-extrabold tabular-nums">
@@ -88,10 +89,10 @@ export function UPIDissector({
 
           <span className="rounded-full border border-current/20 px-3 py-1.5 text-xs font-bold">
             {isCritical
-              ? 'HIGH RISK'
+              ? t('highRisk')
               : isLocalSafe
-                ? 'LOW INDICATORS'
-                : 'REVIEW'}
+                ? t('lowIndicators')
+                : t('review')}
           </span>
         </div>
       </section>
@@ -113,10 +114,10 @@ export function UPIDissector({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-slate-500">Paying</p>
+            <p className="text-xs font-medium text-slate-500">{t("paying")}</p>
 
             <p className="mt-0.5 break-words text-base font-bold text-slate-900">
-              {parsed.pn || 'Recipient name not provided'}
+              {parsed.pn || t('recipientMissing')}
             </p>
 
             <p className="mt-1 break-all font-mono text-xs text-slate-500">
