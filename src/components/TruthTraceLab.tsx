@@ -679,7 +679,7 @@ export function TruthTraceCompact({ result }: { result: TraceResult }) {
   return (
     <section className={`rounded-2xl border p-4 shadow-card ${severe ? 'border-rose-200 bg-rose-50' : 'border-blue-100 bg-blue-50'}`}>
       <div className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><GitBranch size={17} className="text-blue-700" /> TruthTrace firewall</span>
+        <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><TruthTraceMark size={18} className="text-blue-700" /> TruthTrace firewall</span>
         <span className={`rounded-full px-2 py-1 text-[11px] font-extrabold ${severe ? 'bg-rose-100 text-rose-800' : 'bg-white text-blue-800'}`}>{severe ? 'HANDOFF BLOCKED' : 'EVIDENCE CHECK'}</span>
       </div>
       {result.signals.length ? result.signals.map(signal => (
