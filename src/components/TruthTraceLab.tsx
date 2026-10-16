@@ -506,7 +506,7 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
       {!edited && Boolean(submitted.message.trim()) && (
         <section aria-label="SMS-only warning signs" className="rounded-2xl border border-amber-200 bg-white p-3.5 shadow-card">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><FileText size={17} className="text-amber-700" /> Message warning signs</h2>
+            <h2 className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><FileText size={17} className="text-amber-700" /> Context-aware message review</h2>
             <span className={`rounded-full px-2 py-1 text-[10px] font-extrabold ${result.messageScreening.status === 'HIGH_CONCERN' ? 'bg-rose-100 text-rose-800' : result.messageScreening.status === 'CAUTION' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>
               {result.messageScreening.status === 'HIGH_CONCERN' ? 'CONCERNING' : result.messageScreening.status === 'CAUTION' ? 'REVIEW' : 'UNVERIFIED'}
             </span>
@@ -527,6 +527,9 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
                 </div>
               ))}
             </div>
+          )}
+          {result.messageScreening.contextNotes.length > 0 && (
+            <p className="mt-2 rounded-xl bg-slate-50 p-2.5 text-[11px] leading-relaxed text-slate-600">{result.messageScreening.contextNotes[0]}</p>
           )}
           {result.messageScreening.urls.length > 0 && (
             <div className="mt-3 rounded-xl bg-slate-50 p-2.5">

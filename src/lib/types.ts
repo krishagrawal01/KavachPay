@@ -79,4 +79,4 @@ export interface AdaptedPattern {
 }
 
 /** Main customer tabs plus advanced demo views. */
-export type TabKey = 'scanner' | 'links' | 'tools' | 'mule' | 'adaptive' | 'truthtrace';
+export type TabKey = 'scanner' | 'links' | 'tools' | 'mule' | 'adaptive' | 'accuracy' | 'truthtrace';

@@ -1,5 +1,6 @@
 import { parseUPI } from './upi';
 import { matchAdaptedPatterns } from './risk';
+import { analyzeMessageContext } from './messageContext';
 
 /**
  * TruthTrace runs entirely on user-supplied material. It NEVER fetches a website,
@@ -48,6 +49,7 @@ export interface MessageScreening {
   status: MessageScreeningStatus;
   indicators: MessageIndicator[];
   urls: string[];
+  contextNotes: string[];
   /** Plain-text signals only; neither website content nor sender identity was authenticated. */
   senderVerified: false;
   webpageInspected: false;
@@ -116,60 +118,41 @@ function isValidVpa(value: string): boolean {
 }
 
 /** An independent warning-sign screen for SMS text. It is NOT a legitimacy classifier. */
-export function screenMessage(message: string): MessageScreening {
+export function screenMessage(message: string, options: { includeLocalMemory?: boolean } = {}): MessageScreening {
   const text = message.slice(0, MAX_INPUT).trim();
   const urls = uniqueMatches(text, WEB_PATTERN);
   const plain = text.replace(URI_PATTERN, ' ').replace(WEB_PATTERN, ' ');
-  const indicators: MessageIndicator[] = [];
+  const context = analyzeMessageContext(text);
+  const indicators: MessageIndicator[] = [...context.clues];
   function add(id: string, title: string, detail: string, strength: 'strong' | 'weak') {
-    if (!indicators.some((item) => item.id === id)) indicators.push({ id, title, detail, strength });
+    if (!indicators.some(item => item.id === id)) indicators.push({ id, title, detail, strength });
   }
-  if (!text) return { status: 'NOT_ASSESSED', indicators, urls, senderVerified: false, webpageInspected: false };
-
-  // Pair credential keywords with a request, rather than classifying every OTP notification as fraud.
-  const credential = /\b(?:otp|one.time.password|upi\s*pin|cvv|card\s*pin|atm\s*pin|password)\b|ओटीपी|पिन/i.test(plain);
-  const request = /\b(?:share|send|reply|tell|submit|provide|enter|give|forward|bhejo|bheje|batao|bataye|daalo|dalo)\b|भेज(?:ो|ें)|बताएं|दर्ज करें/i.test(plain);
-  const protectiveAdvice = /\b(?:never|do not|don.t|avoid|should not|mat|nahin|nahi)\b.{0,32}\b(?:share|send|reply|tell|enter|give|forward|bhejo|batao)\b|कभी\s*नहीं|साझा\s*न\s*करें/i.test(plain);
-  if (credential && request && !protectiveAdvice) {
-    add('credential-request', 'Sensitive code or PIN requested', 'The text appears to ask for an OTP, PIN or password. Do not share sensitive payment credentials; verify the request using an independently found official contact.', 'strong');
-  }
-  const refundClaim = /\b(?:refund|cashback|reward|prize|lottery|money\s*back|winnings?)\b|रिफंड|कैशबैक|इनाम/i.test(plain);
-  const feeToReceive = /\b(?:processing|release|verification|activation|transfer|refundable)\s*(?:fee|charge|deposit)\b|\b(?:pay|deposit|send)\b.{0,35}\b(?:fee|charge|to\s+(?:receive|claim|release))\b|भुगतान.{0,20}(?:रिफंड|कैशबैक)/i.test(plain);
-  if (refundClaim && feeToReceive) {
-    add('advance-fee', 'Money requested to release a reward', 'The message links a refund/reward claim with a fee or outgoing payment. This is a concerning instruction, but the payment destination has not been verified.', 'strong');
-  }
-  const remoteTool = /\b(?:anydesk|teamviewer|quick\s*support|screen\s*share|remote\s*access)\b/i.test(plain);
-  const remoteInstruction = /\b(?:install|download|allow|enable|start|open|share|grant)\b/i.test(plain);
-  if (remoteTool && remoteInstruction && !/\b(?:never|do not|don't)\b.{0,30}\b(?:install|download|allow)\b/i.test(plain)) {
-    add('remote-access', 'Remote-access or screen-sharing instruction', 'The message encourages remote access or screen sharing. Never let an unknown caller control your device during a payment.', 'strong');
-  }
+  if (!text) return { status: 'NOT_ASSESSED', indicators, urls, contextNotes: [], senderVerified: false, webpageInspected: false };
 
   for (const raw of urls.slice(0, 6)) {
     try {
       const url = new URL(raw);
       const host = url.hostname.toLowerCase();
-      if (url.protocol === 'http:') add('plaintext-link', 'Link does not use HTTPS', 'The submitted link uses HTTP. This alone does not establish fraud, and the site has not been opened.', 'weak');
-      if (url.username || url.password) add('credential-in-url', 'Misleading link structure', 'The link embeds user information before an @ sign, which can obscure the actual destination host.', 'weak');
-      if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(host) || host.includes('xn--')) add('unusual-domain', 'Unusual website address', 'The URL uses a numerical IP or encoded internationalized domain. Inspect the actual hostname carefully.', 'weak');
+      if (url.protocol === 'http:') add('plaintext-link', 'Link does not use HTTPS', 'HTTP alone is not fraud; the website has not been inspected.', 'weak');
+      if (url.username || url.password) add('credential-in-url', 'Misleading link structure', 'The URL contains an @-style username before the real host.', 'weak');
+      if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(host) || host.includes('xn--')) add('unusual-domain', 'Unusual website address', 'An IP address or encoded domain requires careful review; not proof of fraud.', 'weak');
       if (/(?:^|\.)(?:bit\.ly|tinyurl\.com|cutt\.ly|is\.gd|t\.co|rebrand\.ly|shorturl\.at|rb\.gy)$/.test(host)) {
-        add('short-link', 'Shortened link hides the final destination', 'A URL shortener appears in the message. The final website has not been resolved or inspected.', 'weak');
+        add('short-link', 'Shortened link hides its destination', 'The shortened URL was not resolved, so the actual website is unknown.', 'weak');
       }
     } catch { /* Invalid URL text is not proof of fraud. */ }
   }
-  const locallyReviewed = matchAdaptedPatterns(plain);
-  if (locallyReviewed) {
-    add('local-reviewed-pattern', 'Locally saved scam pattern matched',
-      `This text matches at least two keywords from an analyst-approved browser-only rule: ${locallyReviewed.signature}. This is a heuristic match, not evidence the sender is fraudulent.`, 'strong');
+
+  if (options.includeLocalMemory !== false) {
+    const locallyReviewed = matchAdaptedPatterns(plain);
+    if (locallyReviewed) {
+      add('local-reviewed-pattern', 'Analyst-reviewed browser pattern matched',
+        `Matched an approved local keyword rule: ${locallyReviewed.signature}. This is not AI retraining or proof of fraud.`, 'strong');
+    }
   }
-  // Time pressure is weak evidence, especially in ordinary marketing campaigns.
-  const highPressure = /\b(?:urgent|immediately|last chance|final notice|within\s+\d+\s+(?:hours?|minutes?)|account\s+(?:blocked|suspended)|disconnection|disconnected|connection\s+will\s+be\s+cut)\b|तुरंत|अभी\s*करें|आखिरी\s*मौका|बिजली\s*काट/i.test(plain);
-  const mildPressure = /\b(?:abhi|turant|jaldi|aaj\s*hi|today\s*only|act\s*now)\b/i.test(plain);
-  if ((highPressure || mildPressure) && urls.length) {
-    add('time-pressure', 'Act-now language next to a link', 'The message encourages quick action through a link. Legitimate promotions can use similar wording, so treat this as a weak warning sign.', 'weak');
-  }
+
   const status: MessageScreeningStatus = indicators.some(i => i.strength === 'strong')
     ? 'HIGH_CONCERN' : indicators.length ? 'CAUTION' : 'NO_OBVIOUS_SIGNALS';
-  return { status, indicators, urls, senderVerified: false, webpageInspected: false };
+  return { status, indicators, urls, contextNotes: context.observations, senderVerified: false, webpageInspected: false };
 }
 
 export function analyzeTruthTrace(input: TraceInput): TraceResult {
@@ -273,7 +256,7 @@ export function analyzeTruthTrace(input: TraceInput): TraceResult {
   }
   // Low-confidence context signals do not independently cause a STOP.
   const plainMessage = message.replace(URI_PATTERN, ' ').replace(WEB_PATTERN, ' ');
-  if (/\b(urgent|immediately|last chance|within \d+ minutes?|account suspended|final notice)\b/i.test(plainMessage)) {
+  if (analyzeMessageContext(plainMessage).clues.some(clue => clue.id === 'time-pressure')) {
     add('pressure', 'Pressure or urgency language', 'The message includes urgency language. This is a weak indicator, not proof of fraud.', 8, false);
   }
   if (websites.length) {

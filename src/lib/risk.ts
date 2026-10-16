@@ -12,6 +12,7 @@ import {
   getVpaInfo,
   getMuleHop,
 } from './upi';
+import { isBenignStatusNotice } from './messageContext';
 
 const ADAPTED_KEY = 'kavach_adapted_patterns';
 
@@ -58,6 +59,9 @@ export function matchAdaptedPatterns(
 ): AdaptedPattern | null {
   const patterns = loadAdaptedPatterns();
   const lower = (text || '').toLowerCase();
+  // A completed-status notification with no action request is a known false-positive
+  // trap for keyword-only KYC/refund signatures. A benign context is NOT proof of safety.
+  if (isBenignStatusNotice(text)) return null;
 
   for (const pattern of patterns) {
     const keywords = Array.isArray(pattern.keywords)
@@ -70,7 +74,13 @@ export function matchAdaptedPatterns(
     // Two distinct keywords are required to avoid broad rules flagging an
     // unrelated legitimate message merely because it says "refund" or "link".
     const distinct = [...new Set(keywords.map(keyword => keyword.toLowerCase().trim()))];
-    if (distinct.length >= 2 && distinct.filter(keyword => lower.includes(keyword)).length >= 2) {
+    const includesKeyword = (keyword: string) => {
+      const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return /^[a-z0-9_ -]+$/i.test(keyword)
+        ? new RegExp(`(^|[^a-z0-9_])${escaped}(?=$|[^a-z0-9_])`, 'i').test(lower)
+        : lower.includes(keyword);
+    };
+    if (distinct.length >= 2 && distinct.filter(includesKeyword).length >= 2) {
       return {
         ...pattern,
         matchLatency: 'Matched locally',

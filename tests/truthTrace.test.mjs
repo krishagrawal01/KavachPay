@@ -8,10 +8,10 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 const dir = mkdtempSync(join(tmpdir(), 'kavach-trace-'));
 try {
-  for (const name of ['upi', 'risk', 'truthTrace']) {
+  for (const name of ['upi', 'messageContext', 'risk', 'truthTrace']) {
     const source = readFileSync(`src/lib/${name}.ts`, 'utf8');
     const result = ts.transpileModule(source, {fileName: `${name}.ts`, compilerOptions: {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022}});
-    writeFileSync(join(dir, `${name}.cjs`), result.outputText.replace("require('./upi')", "require('./upi.cjs')").replace("require(\"./upi\")", "require(\"./upi.cjs\")").replace("require('./risk')", "require('./risk.cjs')").replace("require(\"./risk\")", "require(\"./risk.cjs\")"));
+    writeFileSync(join(dir, `${name}.cjs`), result.outputText.replace("require('./messageContext')", "require('./messageContext.cjs')").replace('require("./messageContext")', 'require("./messageContext.cjs")').replace("require('./upi')", "require('./upi.cjs')").replace("require(\"./upi\")", "require(\"./upi.cjs\")").replace("require('./risk')", "require('./risk.cjs')").replace("require(\"./risk\")", "require(\"./risk.cjs\")"));
   }
   const { createRequire } = await import('node:module');
   const require = createRequire(pathToFileURL(join(dir, 'truthTrace.cjs')));

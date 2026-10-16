@@ -694,7 +694,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
           {smsCheck && input.trim() && (
             <section aria-label="Message warning signs" className="rounded-2xl border border-amber-200 bg-white p-4 shadow-card">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-sm font-extrabold text-slate-900">SMS warning signs</h2>
+                <h2 className="text-sm font-extrabold text-slate-900">Context-aware SMS review</h2>
                 <span className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold ${smsCheck.status === 'HIGH_CONCERN' ? 'bg-rose-100 text-rose-800' : smsCheck.status === 'CAUTION' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>
                   {smsCheck.status === 'HIGH_CONCERN' ? 'CONCERNING TEXT' : smsCheck.status === 'CAUTION' ? 'REVIEW TEXT' : 'NOT VERIFIED'}
                 </span>
@@ -706,7 +706,10 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
                   ))}
                 </div>
               ) : <p className="mt-2 text-xs leading-relaxed text-slate-600">No obvious text warnings found. This does not prove that the SMS, sender or website is genuine.</p>}
-              <p className="mt-2 text-[11px] leading-relaxed text-slate-500">SMS screening is rule-based. Website visited: No · Sender verified: No.</p>
+              {smsCheck.contextNotes.length > 0 && (
+                <p className="mt-2 rounded-xl bg-slate-50 p-2.5 text-[11px] leading-relaxed text-slate-600">{smsCheck.contextNotes[0]}</p>
+              )}
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-500">Context-aware rules (not sender verification). Website visited: No · Sender verified: No.</p>
             </section>
           )}
 

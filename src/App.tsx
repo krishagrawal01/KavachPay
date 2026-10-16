@@ -4,6 +4,7 @@ import {
   BrainCircuit,
   ChevronRight,
   FlaskConical,
+  BarChart3,
   Network,
   ShieldCheck,
   GitBranch,
@@ -21,6 +22,7 @@ import { MuleGraph, AdaptiveMemory } from '@/components/MuleGraph';
 import { WhatsAppPopup } from '@/components/WhatsAppPopup';
 import { LinkSafetyGateway } from '@/components/LinkSafetyGateway';
 import { TruthTraceLab } from '@/components/TruthTraceLab';
+import { AccuracyLab } from '@/components/AccuracyLab';
 
 import { parseUPI, formatAmount } from '@/lib/upi';
 import { assessRisk } from '@/lib/risk';
@@ -522,6 +524,19 @@ function App() {
               <ChevronRight size={19} className="shrink-0 text-ink-dim" />
             </button>
 
+            <button
+              type="button"
+              onClick={() => setActiveTab('accuracy')}
+              className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-50 text-violet-700"><BarChart3 size={22}/></span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold text-ink-primary">Accuracy Lab <span className="ml-1 text-[10px] text-violet-700">NEW</span></span>
+                <span className="mt-1 block text-xs leading-relaxed text-ink-muted">Measure errors on synthetic cases; compare context rules against simple keywords.</span>
+              </span>
+              <ChevronRight size={19} className="shrink-0 text-ink-dim" />
+            </button>
+
             <details className="group rounded-2xl border border-border bg-white shadow-card">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-ink-primary">
                 Additional educational visualisations
@@ -575,6 +590,12 @@ function App() {
               <ArrowLeft size={17} /> {investigationReturnTab === 'links' ? 'Back to message check' : 'Back to tools'}
             </button>
             <TruthTraceLab key={investigationVersion} initialInput={investigationDraft} />
+          </section>
+        )}
+
+        {activeTab === 'accuracy' && (
+          <section className="px-4 py-5 sm:px-5">
+            <AccuracyLab onBack={() => setActiveTab('tools')} />
           </section>
         )}
 
