@@ -5,15 +5,13 @@ import {
   ArrowUpRight,
   CheckCircle2,
   ChevronDown,
-  Link2,
   Loader2,
   Search,
-  ShieldAlert,
-  ShieldCheck,
   Volume2,
 } from 'lucide-react';
 
 import type { ParsedUPI, TelemetryState } from '@/lib/types';
+import { KavachMark, LinkSafetyMark, RiskAlertMark } from '@/components/KavachIcons';
 import { parseUPI, formatAmount } from '@/lib/upi';
 import { useI18n } from '@/lib/i18n';
 import { assessRisk } from '@/lib/risk';
@@ -649,11 +647,11 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
             <div className="flex items-start gap-3">
               <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/75">
                 {firewallBlocked || result.decision === 'BLOCK' || result.level === 'HIGH' || result.level === 'CRITICAL' ? (
-                  <ShieldAlert size={22} />
+                  <RiskAlertMark size={22} />
                 ) : result.decision === 'WARN' || result.level === 'MEDIUM' || result.level === 'UNVERIFIED' ? (
                   <AlertTriangle size={22} />
                 ) : (
-                  <ShieldCheck size={22} />
+                  <KavachMark size={22} />
                 )}
               </div>
               <div className="min-w-0 flex-1">
@@ -726,7 +724,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
               })}
               className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-extrabold text-blue-800 shadow-sm hover:bg-blue-100"
             >
-              <ShieldCheck size={17} /> View full TruthTrace investigation <ArrowUpRight size={16} />
+              <KavachMark size={17} /> View full TruthTrace investigation <ArrowUpRight size={16} />
             </button>
           )}
           <p className="text-[11px] leading-relaxed text-slate-500">TruthTrace uses the same supplied text and observed UPI request. It does not fetch websites, verify recipient ownership or inherit demonstration data.</p>
@@ -805,7 +803,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
           {result.links.length > 0 && (
             <details className="group rounded-2xl border border-border bg-surface shadow-card">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5 text-sm font-semibold text-ink-primary">
-                <span className="flex items-center gap-2"><Link2 size={16} className="text-brand-blue" /> Link details ({result.links.length})</span>
+                <span className="flex items-center gap-2"><LinkSafetyMark size={16} className="text-brand-blue" /> Link details ({result.links.length})</span>
                 <ChevronDown size={17} className="text-ink-muted transition-transform group-open:rotate-180" />
               </summary>
               <div className="space-y-3 border-t border-border px-4 py-4">
@@ -892,7 +890,7 @@ export function LinkSafetyGateway({ telemetry, initialInput = '', onViewInvestig
 
           {canContinue || canUseLocalFallback || firewallBlocked ? null : (
             <div className="flex items-start gap-2 rounded-2xl border border-border bg-surface p-3.5 text-xs leading-relaxed text-ink-muted">
-              {result.decision === 'BLOCK' ? <ShieldAlert size={16} className="mt-0.5 shrink-0 text-crimson-fraud" /> : <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-ink-dim" />}
+              {result.decision === 'BLOCK' ? <RiskAlertMark size={16} className="mt-0.5 shrink-0 text-crimson-fraud" /> : <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-ink-dim" />}
               <span>
                 {result.decision === 'BLOCK'
                   ? 'Payment handoff is blocked by the risk decision.'
