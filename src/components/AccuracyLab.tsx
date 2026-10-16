@@ -78,7 +78,7 @@ export function AccuracyLab({onBack}:{onBack:()=>void}) {
       <label className="block text-xs font-bold text-slate-700" htmlFor="accuracy-label">Your manually reviewed label</label>
       <select id="accuracy-label" value={label} onChange={e=>setLabel(e.target.value as ExampleLabel)} className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900"><option value="ordinary">Ordinary / non-scam scenario</option><option value="suspicious">Suspicious / scam scenario</option></select>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={addCustom} disabled={!message.trim() || custom.length >= 50} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-extrabold text-white disabled:opacity-40"><Plus size={17}/> Add and evaluate</button>
+        <button type="button" onClick={addCustom} disabled={!message.trim() || custom.length >= 50} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-extrabold text-white disabled:opacity-40"><Plus size={17}/> {t("addEvaluate")}</button>
         {custom.length>0 && <button type="button" onClick={()=>{setCustom([]);setFilter('mistakes');}} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"><Trash2 size={15}/> Reset ({custom.length})</button>}
       </div>
     </section>
