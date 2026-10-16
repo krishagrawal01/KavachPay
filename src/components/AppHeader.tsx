@@ -99,9 +99,9 @@ export function AppHeader({ muted, onToggleMute, onToggleJudgePanel }: AppHeader
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-surface/95 px-4 py-3 backdrop-blur-md sm:px-5">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-surface px-4 py-2 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-pale text-brand-blue">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-pale text-brand-blue">
             <ShieldCheck size={22} strokeWidth={2.2} />
           </div>
           <div className="min-w-0">
@@ -116,7 +116,7 @@ export function AppHeader({ muted, onToggleMute, onToggleJudgePanel }: AppHeader
             onClick={() => void handleInstall()}
             aria-label={isInstalled ? 'View app installation status' : 'Install Kavach'}
             title={isInstalled ? 'Kavach is installed' : 'Install Kavach'}
-            className="tactile flex h-10 items-center gap-1.5 rounded-xl bg-brand-blue px-3 py-2 text-xs font-bold text-white hover:brightness-105"
+            className="tactile flex h-9 items-center gap-1.5 rounded-lg border border-border bg-brand-pale px-2.5 py-2 text-[11px] font-bold text-brand-blue transition-colors hover:bg-blue-100"
           >
             {isInstalled ? <CheckCircle2 size={15} /> : <Download size={15} />}
             <span>{isInstalled ? 'Installed' : 'Install app'}</span>
@@ -127,7 +127,7 @@ export function AppHeader({ muted, onToggleMute, onToggleJudgePanel }: AppHeader
             onClick={onToggleMute}
             aria-label={muted ? 'Enable warning sounds' : 'Mute warning sounds'}
             title={muted ? 'Enable warning sounds' : 'Mute warning sounds'}
-            className="tactile flex h-10 w-10 items-center justify-center rounded-xl text-ink-muted hover:bg-obsidian hover:text-ink-primary"
+            className="tactile flex h-9 w-9 items-center justify-center rounded-lg text-ink-muted hover:bg-obsidian hover:text-ink-primary"
           >
             {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
           </button>
@@ -137,7 +137,7 @@ export function AppHeader({ muted, onToggleMute, onToggleJudgePanel }: AppHeader
             onClick={onToggleJudgePanel}
             aria-label="Open demo and advanced settings"
             title="Demo and advanced settings"
-            className="tactile flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-ink-muted hover:bg-obsidian hover:text-ink-primary"
+            className="tactile flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-white text-ink-muted hover:bg-obsidian hover:text-ink-primary"
           >
             <Settings2 size={18} />
           </button>
