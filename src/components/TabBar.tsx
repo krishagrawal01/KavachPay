@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import type { KavachIconProps } from '@/components/KavachIcons';
 import { QrScanMark, LinkSafetyMark, ToolsMark } from '@/components/KavachIcons';
 import type { TabKey } from '@/lib/types';
 import { useI18n } from '@/lib/i18n';
@@ -11,7 +12,7 @@ interface TabBarProps {
 const TABS: {
   key: 'scanner' | 'links' | 'tools';
   label: 'scanQr' | 'smsLink' | 'moreTools';
-  icon: ComponentType<{ size?: number }>;
+  icon: ComponentType<KavachIconProps>;
 }[] = [
   { key: 'scanner', label: 'scanQr', icon: QrScanMark },
   { key: 'links', label: 'smsLink', icon: LinkSafetyMark },
