@@ -26,6 +26,7 @@ const en = {
   homeTitle: 'Check before you pay.',
   homeDescription: 'Scan a UPI QR to review the payment request before you continue.',
   localChecksAi: 'Local checks + AI when available',
+  scanQr: 'Scan QR',
   scanPaymentQr: 'Scan a payment QR',
   scanDescription: 'Check the payment details before you send money.',
   alignQr: 'Align the QR code inside the frame',
@@ -84,6 +85,7 @@ type Catalog = Partial<Record<MessageKey, string>>;
 
 const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
   hi: {
+    scanQr: 'QR स्कैन',
     language: 'भाषा', paymentSafety: 'भुगतान सुरक्षा', installApp: 'ऐप इंस्टॉल करें', installed: 'इंस्टॉल है',
     homeEyebrow: 'भुगतान सुरक्षा', homeTitle: 'भुगतान से पहले जाँचें।', homeDescription: 'आगे बढ़ने से पहले भुगतान अनुरोध की जाँच के लिए UPI QR स्कैन करें।',
     localChecksAi: 'लोकल जाँच + उपलब्ध होने पर AI', scanPaymentQr: 'भुगतान QR स्कैन करें', scanDescription: 'पैसे भेजने से पहले भुगतान विवरण जाँचें।',
@@ -102,6 +104,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'कैमरा अनुमति बंद है। ब्राउज़र सेटिंग में इस साइट के लिए कैमरा अनुमति दें और फिर कोशिश करें।', cameraUnavailable: 'कैमरा उपलब्ध नहीं है। इसके बजाय QR इमेज अपलोड करें।', qrUnreadable: 'इस इमेज से QR नहीं पढ़ सके। साफ़ तस्वीर आज़माएँ या UPI लिंक पेस्ट करें।',
   },
   bn: {
+    scanQr: 'QR স্ক্যান',
     language: 'ভাষা', paymentSafety: 'পেমেন্ট সুরক্ষা', installApp: 'অ্যাপ ইনস্টল করুন', installed: 'ইনস্টল করা আছে',
     homeEyebrow: 'পেমেন্ট সুরক্ষা', homeTitle: 'পেমেন্টের আগে যাচাই করুন।', homeDescription: 'এগোনোর আগে পেমেন্টের অনুরোধ যাচাই করতে UPI QR স্ক্যান করুন।',
     localChecksAi: 'স্থানীয় যাচাই + AI পাওয়া গেলে', scanPaymentQr: 'পেমেন্ট QR স্ক্যান করুন', scanDescription: 'টাকা পাঠানোর আগে পেমেন্টের তথ্য যাচাই করুন।',
@@ -120,6 +123,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'ক্যামেরার অনুমতি বন্ধ। ব্রাউজার সেটিংসে এই সাইটের জন্য ক্যামেরা অনুমতি দিন।', cameraUnavailable: 'কোনও ক্যামেরা পাওয়া যায়নি। বিকল্প হিসেবে QR ছবি আপলোড করুন।', qrUnreadable: 'এই ছবি থেকে QR পড়া যায়নি। পরিষ্কার ছবি নিন বা UPI লিঙ্ক পেস্ট করুন।',
   },
   mr: {
+    scanQr: 'QR स्कॅन',
     language: 'भाषा', paymentSafety: 'पेमेंट सुरक्षा', installApp: 'अॅप इन्स्टॉल करा', installed: 'इन्स्टॉल केले',
     homeEyebrow: 'पेमेंट संरक्षण', homeTitle: 'पैसे देण्यापूर्वी तपासा.', homeDescription: 'पुढे जाण्यापूर्वी पेमेंट विनंती तपासण्यासाठी UPI QR स्कॅन करा.',
     localChecksAi: 'स्थानिक तपासणी + उपलब्ध असल्यास AI', scanPaymentQr: 'पेमेंट QR स्कॅन करा', scanDescription: 'पैसे पाठवण्यापूर्वी पेमेंट तपशील तपासा.',
@@ -138,6 +142,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'कॅमेरा परवानगी बंद आहे. ब्राउझर सेटिंगमध्ये या साइटसाठी कॅमेरा परवानगी द्या.', cameraUnavailable: 'कॅमेरा उपलब्ध नाही. QR चित्र अपलोड करा.', qrUnreadable: 'या चित्रातून QR वाचता आला नाही. स्पष्ट चित्र वापरा किंवा UPI लिंक पेस्ट करा.',
   },
   ta: {
+    scanQr: 'QR ஸ்கேன்',
     language: 'மொழி', paymentSafety: 'கட்டணப் பாதுகாப்பு', installApp: 'செயலியை நிறுவு', installed: 'நிறுவப்பட்டது',
     homeEyebrow: 'கட்டணப் பாதுகாப்பு', homeTitle: 'பணம் செலுத்தும் முன் சரிபார்க்கவும்.', homeDescription: 'தொடர்வதற்கு முன் கட்டணக் கோரிக்கையைப் பார்க்க UPI QR-ஐ ஸ்கேன் செய்யுங்கள்.',
     localChecksAi: 'உள்ளூர் சோதனைகள் + கிடைத்தால் AI', scanPaymentQr: 'கட்டண QR-ஐ ஸ்கேன் செய்', scanDescription: 'பணம் அனுப்பும் முன் கட்டண விவரங்களைச் சரிபார்க்கவும்.',
@@ -156,6 +161,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'கேமரா அனுமதி முடக்கப்பட்டுள்ளது. உலாவி அமைப்புகளில் இந்தத் தளத்திற்கு கேமரா அனுமதி அளிக்கவும்.', cameraUnavailable: 'கேமரா கிடைக்கவில்லை. QR படத்தைப் பதிவேற்றலாம்.', qrUnreadable: 'இந்தப் படத்தில் QR-ஐப் படிக்க முடியவில்லை. தெளிவான படத்தை முயற்சிக்கவும் அல்லது UPI இணைப்பை ஒட்டவும்.',
   },
   te: {
+    scanQr: 'QR స్కాన్',
     language: 'భాష', paymentSafety: 'చెల్లింపు భద్రత', installApp: 'యాప్‌ను ఇన్‌స్టాల్ చేయండి', installed: 'ఇన్‌స్టాల్ అయింది',
     homeEyebrow: 'చెల్లింపు రక్షణ', homeTitle: 'చెల్లించే ముందు తనిఖీ చేయండి.', homeDescription: 'కొనసాగించే ముందు చెల్లింపు అభ్యర్థనను చూడటానికి UPI QR స్కాన్ చేయండి.',
     localChecksAi: 'స్థానిక తనిఖీలు + అందుబాటులో ఉంటే AI', scanPaymentQr: 'చెల్లింపు QR స్కాన్ చేయండి', scanDescription: 'డబ్బు పంపే ముందు చెల్లింపు వివరాలు తనిఖీ చేయండి.',
@@ -174,6 +180,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'కెమెరా అనుమతి నిలిపివేయబడింది. బ్రౌజర్ సెట్టింగ్‌లలో ఈ సైట్‌కు కెమెరా అనుమతి ఇవ్వండి.', cameraUnavailable: 'కెమెరా అందుబాటులో లేదు. బదులుగా QR చిత్రాన్ని అప్‌లోడ్ చేయండి.', qrUnreadable: 'ఈ చిత్రం నుంచి QR చదవలేకపోయాం. స్పష్టమైన చిత్రాన్ని ప్రయత్నించండి లేదా UPI లింక్‌ను పేస్ట్ చేయండి.',
   },
   gu: {
+    scanQr: 'QR સ્કૅન',
     language: 'ભાષા', paymentSafety: 'ચુકવણી સુરક્ષા', installApp: 'ઍપ ઇન્સ્ટોલ કરો', installed: 'ઇન્સ્ટોલ થઈ ગઈ',
     homeEyebrow: 'ચુકવણી સુરક્ષા', homeTitle: 'ચુકવણી પહેલાં તપાસો.', homeDescription: 'આગળ વધતાં પહેલાં ચુકવણી વિનંતી તપાસવા UPI QR સ્કૅન કરો.',
     localChecksAi: 'સ્થાનિક તપાસ + ઉપલબ્ધ હોય ત્યારે AI', scanPaymentQr: 'ચુકવણી QR સ્કૅન કરો', scanDescription: 'પૈસા મોકલતાં પહેલાં ચુકવણીની વિગતો તપાસો.',
@@ -192,6 +199,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'કૅમેરાની મંજૂરી બંધ છે. બ્રાઉઝર સેટિંગમાં આ સાઇટ માટે મંજૂરી આપો.', cameraUnavailable: 'કૅમેરા મળ્યો નથી. તેના બદલે QR છબી અપલોડ કરો.', qrUnreadable: 'આ છબીમાંથી QR વાંચી શકાયો નથી. સ્પષ્ટ છબી અજમાવો અથવા UPI લિંક પેસ્ટ કરો.',
   },
   kn: {
+    scanQr: 'QR ಸ್ಕ್ಯಾನ್',
     language: 'ಭಾಷೆ', paymentSafety: 'ಪಾವತಿ ಸುರಕ್ಷತೆ', installApp: 'ಆ್ಯಪ್ ಸ್ಥಾಪಿಸಿ', installed: 'ಸ್ಥಾಪಿಸಲಾಗಿದೆ',
     homeEyebrow: 'ಪಾವತಿ ರಕ್ಷಣೆ', homeTitle: 'ಪಾವತಿಸುವ ಮೊದಲು ಪರಿಶೀಲಿಸಿ.', homeDescription: 'ಮುಂದುವರಿಯುವ ಮೊದಲು ಪಾವತಿ ವಿನಂತಿಯನ್ನು ಪರಿಶೀಲಿಸಲು UPI QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.',
     localChecksAi: 'ಸ್ಥಳೀಯ ಪರಿಶೀಲನೆ + ಲಭ್ಯವಿದ್ದರೆ AI', scanPaymentQr: 'ಪಾವತಿ QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ', scanDescription: 'ಹಣ ಕಳುಹಿಸುವ ಮೊದಲು ಪಾವತಿ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.',
@@ -210,6 +218,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'ಕ್ಯಾಮೆರಾ ಅನುಮತಿ ನಿರಾಕರಿಸಲಾಗಿದೆ. ಬ್ರೌಸರ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಈ ಸೈಟ್‌ಗೆ ಅನುಮತಿ ನೀಡಿ.', cameraUnavailable: 'ಕ್ಯಾಮೆರಾ ಲಭ್ಯವಿಲ್ಲ. ಬದಲಿಗೆ QR ಚಿತ್ರ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.', qrUnreadable: 'ಈ ಚಿತ್ರದಿಂದ QR ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಸ್ಪಷ್ಟ ಚಿತ್ರ ಬಳಸಿ ಅಥವಾ UPI ಲಿಂಕ್ ಅಂಟಿಸಿ.',
   },
   ml: {
+    scanQr: 'QR സ്കാൻ',
     language: 'ഭാഷ', paymentSafety: 'പേയ്മെന്റ് സുരക്ഷ', installApp: 'ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്യുക', installed: 'ഇൻസ്റ്റാൾ ചെയ്തു',
     homeEyebrow: 'പേയ്മെന്റ് സംരക്ഷണം', homeTitle: 'പണം അയയ്ക്കും മുമ്പ് പരിശോധിക്കുക.', homeDescription: 'തുടരുന്നതിന് മുമ്പ് പേയ്മെന്റ് അഭ്യർത്ഥന പരിശോധിക്കാൻ UPI QR സ്കാൻ ചെയ്യുക.',
     localChecksAi: 'പ്രാദേശിക പരിശോധന + ലഭ്യമെങ്കിൽ AI', scanPaymentQr: 'പേയ്മെന്റ് QR സ്കാൻ ചെയ്യുക', scanDescription: 'പണം അയയ്ക്കുന്നതിന് മുമ്പ് പേയ്മെന്റ് വിവരങ്ങൾ പരിശോധിക്കുക.',
@@ -228,6 +237,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'ക്യാമറ അനുമതി തടഞ്ഞിരിക്കുന്നു. ബ്രൗസർ ക്രമീകരണങ്ങളിൽ ഈ സൈറ്റിന് അനുമതി നൽകുക.', cameraUnavailable: 'ക്യാമറ ലഭ്യമല്ല. പകരം QR ചിത്രം അപ്‌ലോഡ് ചെയ്യുക.', qrUnreadable: 'ഈ ചിത്രത്തിൽ നിന്ന് QR വായിക്കാനായില്ല. വ്യക്തമായ ചിത്രം പരീക്ഷിക്കുക അല്ലെങ്കിൽ UPI ലിങ്ക് ഒട്ടിക്കുക.',
   },
   pa: {
+    scanQr: 'QR ਸਕੈਨ',
     language: 'ਭਾਸ਼ਾ', paymentSafety: 'ਭੁਗਤਾਨ ਸੁਰੱਖਿਆ', installApp: 'ਐਪ ਇੰਸਟਾਲ ਕਰੋ', installed: 'ਇੰਸਟਾਲ ਹੈ',
     homeEyebrow: 'ਭੁਗਤਾਨ ਸੁਰੱਖਿਆ', homeTitle: 'ਭੁਗਤਾਨ ਤੋਂ ਪਹਿਲਾਂ ਜਾਂਚੋ।', homeDescription: 'ਅੱਗੇ ਵਧਣ ਤੋਂ ਪਹਿਲਾਂ ਭੁਗਤਾਨ ਬੇਨਤੀ ਦੀ ਜਾਂਚ ਲਈ UPI QR ਸਕੈਨ ਕਰੋ।',
     localChecksAi: 'ਸਥਾਨਕ ਜਾਂਚ + ਉਪਲਬਧ ਹੋਣ ਤੇ AI', scanPaymentQr: 'ਭੁਗਤਾਨ QR ਸਕੈਨ ਕਰੋ', scanDescription: 'ਪੈਸੇ ਭੇਜਣ ਤੋਂ ਪਹਿਲਾਂ ਭੁਗਤਾਨ ਵੇਰਵੇ ਜਾਂਚੋ।',
@@ -246,6 +256,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'ਕੈਮਰਾ ਇਜਾਜ਼ਤ ਬੰਦ ਹੈ। ਬ੍ਰਾਊਜ਼ਰ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਇਸ ਸਾਈਟ ਲਈ ਇਜਾਜ਼ਤ ਦਿਓ।', cameraUnavailable: 'ਕੈਮਰਾ ਉਪਲਬਧ ਨਹੀਂ। ਇਸ ਦੀ ਥਾਂ QR ਤਸਵੀਰ ਅੱਪਲੋਡ ਕਰੋ।', qrUnreadable: 'ਇਸ ਤਸਵੀਰ ਤੋਂ QR ਨਹੀਂ ਪੜ੍ਹ ਸਕੇ। ਸਾਫ਼ ਤਸਵੀਰ ਵਰਤੋ ਜਾਂ UPI ਲਿੰਕ ਪੇਸਟ ਕਰੋ।',
   },
   or: {
+    scanQr: 'QR ସ୍କାନ୍',
     language: 'ଭାଷା', paymentSafety: 'ପେମେଣ୍ଟ ସୁରକ୍ଷା', installApp: 'ଆପ୍‌ ଇନ୍‌ଷ୍ଟଲ୍‌ କରନ୍ତୁ', installed: 'ଇନ୍‌ଷ୍ଟଲ୍‌ ହୋଇଛି',
     homeEyebrow: 'ପେମେଣ୍ଟ ସୁରକ୍ଷା', homeTitle: 'ଟଙ୍କା ଦେବା ପୂର୍ବରୁ ଯାଞ୍ଚ କରନ୍ତୁ।', homeDescription: 'ଆଗକୁ ବଢ଼ିବା ପୂର୍ବରୁ ପେମେଣ୍ଟ ଅନୁରୋଧ ଯାଞ୍ଚ କରିବାକୁ UPI QR ସ୍କାନ୍‌ କରନ୍ତୁ।',
     localChecksAi: 'ସ୍ଥାନୀୟ ଯାଞ୍ଚ + ଉପଲବ୍ଧ ହେଲେ AI', scanPaymentQr: 'ପେମେଣ୍ଟ QR ସ୍କାନ୍‌ କରନ୍ତୁ', scanDescription: 'ଟଙ୍କା ପଠାଇବା ପୂର୍ବରୁ ପେମେଣ୍ଟ ବିବରଣୀ ଯାଞ୍ଚ କରନ୍ତୁ।',
@@ -264,6 +275,7 @@ const translations: Record<Exclude<LanguageCode, 'en'>, Catalog> = {
     cameraPermissionError: 'କ୍ୟାମେରା ଅନୁମତି ବନ୍ଦ ଅଛି। ବ୍ରାଉଜର ସେଟିଂରେ ଏହି ସାଇଟ୍‌କୁ ଅନୁମତି ଦିଅନ୍ତୁ।', cameraUnavailable: 'କ୍ୟାମେରା ମିଳିଲା ନାହିଁ। ବିକଳ୍ପ ଭାବେ QR ଛବି ଅପ୍‌ଲୋଡ୍‌ କରନ୍ତୁ।', qrUnreadable: 'ଏହି ଛବିରୁ QR ପଢ଼ିହେଲା ନାହିଁ। ସ୍ପଷ୍ଟ ଛବି ଚେଷ୍ଟା କରନ୍ତୁ କିମ୍ବା UPI ଲିଙ୍କ୍‌ ପେଷ୍ଟ୍‌ କରନ୍ତୁ।',
   },
   ur: {
+    scanQr: 'QR اسکین',
     language: 'زبان', paymentSafety: 'ادائیگی کا تحفظ', installApp: 'ایپ انسٹال کریں', installed: 'انسٹال ہے',
     homeEyebrow: 'ادائیگی کا تحفظ', homeTitle: 'ادائیگی سے پہلے جانچیں۔', homeDescription: 'آگے بڑھنے سے پہلے ادائیگی کی درخواست دیکھنے کے لیے UPI QR اسکین کریں۔',
     localChecksAi: 'مقامی جانچ + دستیاب ہو تو AI', scanPaymentQr: 'ادائیگی کا QR اسکین کریں', scanDescription: 'رقم بھیجنے سے پہلے ادائیگی کی تفصیلات جانچیں۔',
