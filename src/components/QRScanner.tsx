@@ -370,7 +370,7 @@ export function QRScanner({
       <details className="group rounded-2xl border border-border bg-surface shadow-card">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
           <span className="flex items-center gap-2 text-sm font-semibold text-ink-primary">
-            <Store size={17} className="text-ink-muted" />
+            <MerchantMark size={18} className="text-ink-muted" />
             Shop signboard verification
             <span className="rounded-full bg-obsidian px-2 py-0.5 text-[10px] font-medium text-ink-muted">Advanced</span>
           </span>
