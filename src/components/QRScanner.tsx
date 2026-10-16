@@ -4,7 +4,6 @@ import {
   AlertCircle,
   CheckCircle2,
   ChevronDown,
-  ChevronUp,
   Image as ImageIcon,
   Loader2,
   X,
