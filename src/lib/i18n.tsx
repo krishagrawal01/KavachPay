@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 export const LANGUAGES = [
   { code: 'en', nativeName: 'English', englishName: 'English', dir: 'ltr' },
@@ -307,14 +307,14 @@ function getInitialLanguage(): LanguageCode {
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<LanguageCode>(getInitialLanguage);
 
-  const setLanguage = (nextLanguage: LanguageCode) => {
+  const setLanguage = useCallback((nextLanguage: LanguageCode) => {
     setLanguageState(nextLanguage);
     try {
       window.localStorage.setItem('kavach-language', nextLanguage);
     } catch {
       // The setting still applies for this session if storage is unavailable.
     }
-  };
+  }, []);
 
   useEffect(() => {
     const option = LANGUAGES.find((item) => item.code === language);
@@ -322,12 +322,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.dir = option?.dir ?? 'ltr';
   }, [language]);
 
-  const t = (key: MessageKey) => {
+  const t = useCallback((key: MessageKey) => {
     if (language === 'en') return en[key];
     return translations[language][key] ?? en[key];
-  };
+  }, [language]);
 
-  const value = useMemo(() => ({ language, setLanguage, t }), [language]);
+  const value = useMemo(() => ({ language, setLanguage, t }), [language, setLanguage, t]);
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
