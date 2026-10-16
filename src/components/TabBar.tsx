@@ -50,7 +50,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
             >
               <Icon size={20} strokeWidth={selected ? 2.3 : 1.9} aria-hidden="true" />
               <span className={selected ? 'text-[11px] font-bold leading-tight' : 'text-[11px] font-medium leading-tight'}>
-                {t(tab.label === 'scanQr' ? 'scanPaymentQr' : tab.label)}
+                {t(tab.label)}
               </span>
             </button>
           );
