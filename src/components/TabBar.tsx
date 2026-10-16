@@ -1,5 +1,6 @@
-import { ScanLine, Link2, Grid2X2 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import type { ComponentType } from 'react';
+import type { KavachIconProps } from '@/components/KavachIcons';
+import { QrScanMark, LinkSafetyMark, ToolsMark } from '@/components/KavachIcons';
 import type { TabKey } from '@/lib/types';
 import { useI18n } from '@/lib/i18n';
 
@@ -11,11 +12,11 @@ interface TabBarProps {
 const TABS: {
   key: 'scanner' | 'links' | 'tools';
   label: 'scanQr' | 'smsLink' | 'moreTools';
-  icon: LucideIcon;
+  icon: ComponentType<KavachIconProps>;
 }[] = [
-  { key: 'scanner', label: 'scanQr', icon: ScanLine },
-  { key: 'links', label: 'smsLink', icon: Link2 },
-  { key: 'tools', label: 'moreTools', icon: Grid2X2 },
+  { key: 'scanner', label: 'scanQr', icon: QrScanMark },
+  { key: 'links', label: 'smsLink', icon: LinkSafetyMark },
+  { key: 'tools', label: 'moreTools', icon: ToolsMark },
 ];
 
 export function TabBar({ active, onChange }: TabBarProps) {

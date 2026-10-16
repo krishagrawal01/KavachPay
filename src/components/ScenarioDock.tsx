@@ -1,4 +1,5 @@
-import { ShieldCheck, AlertTriangle, Skull, MonitorSmartphone } from 'lucide-react';
+import { Skull, MonitorSmartphone } from 'lucide-react';
+import { KavachMark, RiskAlertMark } from '@/components/KavachIcons';
 import { SCENARIOS } from '@/lib/scenarios';
 import type { Scenario } from '@/lib/types';
 
@@ -11,12 +12,12 @@ const TAG_STYLES = {
   SAFE: {
     bg: 'bg-npcigreen/10 border-npcigreen/30',
     text: 'text-npcigreen',
-    icon: ShieldCheck,
+    icon: KavachMark,
   },
   SCAM: {
     bg: 'bg-crimson-fraud/10 border-crimson-fraud/30',
     text: 'text-crimson-fraud',
-    icon: AlertTriangle,
+    icon: RiskAlertMark,
   },
 };
 
@@ -30,7 +31,7 @@ export function ScenarioDock({ activeId, onSelect }: ScenarioDockProps) {
       <div className="grid grid-cols-2 gap-2">
         {SCENARIOS.map(s => {
           const style = TAG_STYLES[s.tag];
-  const Icon = s.tag === 'SAFE' ? ShieldCheck : s.tagNumber === 3 ? MonitorSmartphone : s.tagNumber === 2 ? Skull : AlertTriangle;
+  const Icon = s.tag === 'SAFE' ? KavachMark : s.tagNumber === 3 ? MonitorSmartphone : s.tagNumber === 2 ? Skull : RiskAlertMark;
           const isActive = activeId === s.id;
           return (
             <button

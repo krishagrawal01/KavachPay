@@ -2,21 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import {
   AlertCircle,
-  Camera,
   CheckCircle2,
   ChevronDown,
-  ChevronUp,
   Image as ImageIcon,
   Loader2,
-  QrCode,
-  ScanLine,
-  Store,
-  Upload,
   X,
 } from 'lucide-react';
 import { Html5Qrcode } from 'html5-qrcode';
 import type { ShopAnalysisResult } from '@/lib/gemini';
 import { useI18n } from '@/lib/i18n';
+import { CameraScanMark, LinkSafetyMark, MerchantMark, QrScanMark, UploadMark } from '@/components/KavachIcons';
 
 interface QRScannerProps {
   onResult: (text: string) => void;
@@ -250,7 +245,7 @@ export function QRScanner({
           <p className="mt-1 text-sm leading-relaxed text-ink-muted">{t("scanDescription")}</p>
         </div>
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-pale text-brand-blue">
-          <QrCode size={21} />
+          <QrScanMark size={22} />
         </div>
       </div>
 
@@ -264,7 +259,7 @@ export function QRScanner({
           {!scanning && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#0B1220] px-5 text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-emerald-300">
-                <QrCode size={45} strokeWidth={1.35} />
+                <QrScanMark size={45} />
               </div>
               <p className="text-sm font-semibold text-white">{t("alignQr")}</p>
               <p className="max-w-[250px] text-xs leading-relaxed text-slate-300">
@@ -303,7 +298,7 @@ export function QRScanner({
           disabled={scanning}
           className="kavach-primary-action tactile mt-3 w-full disabled:opacity-50"
         >
-          <Camera size={18} />
+          <CameraScanMark size={19} />
           {scanning ? t('scanning') : t('startCameraScan')}
         </button>
 
@@ -313,7 +308,7 @@ export function QRScanner({
             onClick={() => setShowManual((current) => !current)}
             className="kavach-secondary-action tactile w-full px-2 text-xs"
           >
-            <ScanLine size={16} /> {t('pasteUpiLink')}
+            <LinkSafetyMark size={17} /> {t('pasteUpiLink')}
           </button>
           <button
             type="button"
@@ -324,7 +319,7 @@ export function QRScanner({
             disabled={qrUploading || scanning}
             className="kavach-secondary-action tactile w-full px-2 text-xs disabled:opacity-50"
           >
-            {qrUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+            {qrUploading ? <Loader2 size={16} className="animate-spin" /> : <UploadMark size={17} />}
             {qrUploading ? t('readingQr') : t('uploadQrImage')}
           </button>
         </div>
@@ -375,7 +370,7 @@ export function QRScanner({
       <details className="group rounded-2xl border border-border bg-surface shadow-card">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
           <span className="flex items-center gap-2 text-sm font-semibold text-ink-primary">
-            <Store size={17} className="text-ink-muted" />
+            <MerchantMark size={18} className="text-ink-muted" />
             Shop signboard verification
             <span className="rounded-full bg-obsidian px-2 py-0.5 text-[10px] font-medium text-ink-muted">Advanced</span>
           </span>

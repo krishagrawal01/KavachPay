@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
-import { ArrowLeft, BarChart3, CheckCircle2, FlaskConical, Plus, ShieldAlert, Trash2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, FlaskConical, Plus, ShieldAlert, Trash2 } from 'lucide-react';
 import { evaluateSamples, evaluationFixtures, type EvaluationExample, type EvaluationMetrics, type ExampleLabel } from '@/lib/accuracyLab';
 import { useI18n } from '@/lib/i18n';
+import { AccuracyMark } from '@/components/KavachIcons';
 
 type Category = 'all' | 'mistakes' | 'ordinary' | 'suspicious';
 function fmt(value: number|null) { return value === null ? 'N/A' : `${(value * 100).toFixed(1)}%`; }
@@ -46,7 +47,7 @@ export function AccuracyLab({onBack}:{onBack:()=>void}) {
   return <div className="space-y-4 pb-5">
     <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-bold text-blue-700 hover:bg-blue-50"><ArrowLeft size={17}/> {t("backToTools")}</button>
     <header className="rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-4 shadow-sm">
-      <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-blue-700"><BarChart3 size={17}/> Accuracy Lab · Development benchmark</div>
+      <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-blue-700"><AccuracyMark size={17}/> Accuracy Lab · Development benchmark</div>
       <h1 className="mt-1 text-2xl font-extrabold text-slate-900">{t('accuracyHeadline')}</h1>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">Compare a deliberately simple keyword baseline with KavachPay's context-aware SMS warning rules. Metrics are recalculated locally from labeled examples.</p>
     </header>

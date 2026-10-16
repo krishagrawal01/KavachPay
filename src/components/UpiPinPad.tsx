@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ShieldCheck, Delete, Check, Lock } from 'lucide-react';
+import { Delete, Check, Lock } from 'lucide-react';
+import { KavachMark } from '@/components/KavachIcons';
 import type { ParsedUPI } from '@/lib/types';
 import { formatAmount } from '@/lib/upi';
 
@@ -45,7 +46,7 @@ export function UpiPinPad({ parsed, onComplete, onCancel }: UpiPinPadProps) {
       {/* Merchant verification banner */}
       <div className="mx-4 mt-4 rounded-xl bg-npcigreen/10 border border-npcigreen/30 p-3">
         <div className="flex items-center gap-2 mb-1">
-          <ShieldCheck size={16} className="text-npcigreen" />
+          <KavachMark size={16} className="text-npcigreen" />
           <span className="text-xs font-bold text-npcigreen tracking-tight">KavachPay Verified Safe</span>
         </div>
         <div className="text-[10px] text-ink-muted leading-relaxed">

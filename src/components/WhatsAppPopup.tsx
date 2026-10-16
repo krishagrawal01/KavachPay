@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { MessageCircle, X, ChevronRight } from 'lucide-react';
+import { X, ChevronRight } from 'lucide-react';
+import { MessageSafetyMark } from '@/components/KavachIcons';
 
 interface WhatsAppPopupProps {
   message: string;
@@ -40,7 +41,7 @@ export function WhatsAppPopup({ message, sender, onTapToScan, onDismiss }: Whats
       <div className="mx-2 mt-1 rounded-2xl bg-elevated border border-border-light shadow-2xl shadow-black/80 overflow-hidden">
         {/* Notification header bar */}
         <div className="flex items-center gap-2 px-3 py-2 bg-[#1a2e1a] border-b border-border">
-          <MessageCircle size={14} className="text-[#25D366]" fill="#25D366" />
+          <MessageSafetyMark size={14} className="text-[#25D366]" fill="#25D366" />
           <span className="text-[10px] font-bold text-[#25D366] tracking-tight">WhatsApp</span>
           <span className="text-[9px] text-ink-dim ml-auto font-mono">now</span>
           <button onClick={handleDismiss} className="tactile text-ink-dim hover:text-ink-muted">
@@ -52,7 +53,7 @@ export function WhatsAppPopup({ message, sender, onTapToScan, onDismiss }: Whats
         <div className="px-3 py-2.5">
           <div className="flex items-start gap-2.5">
             <div className="w-9 h-9 rounded-full bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center shrink-0">
-              <MessageCircle size={16} className="text-[#25D366]" />
+              <MessageSafetyMark size={17} className="text-[#25D366]" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">

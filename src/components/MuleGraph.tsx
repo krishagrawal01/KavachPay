@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Network, Cpu, Trash2 } from 'lucide-react';
+import { Cpu, Trash2 } from 'lucide-react';
+import { FundFlowMark } from '@/components/KavachIcons';
 import type { ParsedUPI, AdaptedPattern } from '@/lib/types';
 import { extractFraudSignature, loadAdaptedPatterns, saveAdaptedPattern, matchAdaptedPatterns } from '@/lib/risk';
 
@@ -62,7 +63,7 @@ export function MuleGraph({ parsed }: MuleGraphProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Network size={16} className="text-amber-warn" />
+          <FundFlowMark size={16} className="text-amber-warn" />
           <span className="text-xs font-bold tracking-tight text-ink-primary">Illustrative Fund-Flow Network</span>
         </div>
         <div className="text-[10px] font-mono text-ink-muted">Fan-out: {graph.edges.filter(e => e.from === 'mule1').length} accounts</div>

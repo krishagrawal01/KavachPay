@@ -1,18 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ArrowLeft,
-  BrainCircuit,
   ChevronRight,
   FlaskConical,
-  BarChart3,
-  Network,
-  ShieldCheck,
-  GitBranch,
   Sparkles,
 } from 'lucide-react';
 
 import { PhoneShell, JudgePanel } from '@/components/PhoneShell';
 import { AppHeader } from '@/components/AppHeader';
+import { AccuracyMark, FundFlowMark, KavachMark, PatternMemoryMark, TruthTraceMark } from '@/components/KavachIcons';
 import { QRScanner } from '@/components/QRScanner';
 import { UPIDissector } from '@/components/UPIDissector';
 import { InterceptionShield } from '@/components/InterceptionShield';
@@ -415,7 +411,7 @@ function App() {
               <section className="px-5 pb-3 pt-5 sm:px-6">
                 <div className="max-w-md">
                   <div className="kavach-section-label flex items-center gap-2">
-                    <ShieldCheck size={15} strokeWidth={2.3} />
+                    <KavachMark size={16} />
                     {t("paymentSafety")}
                   </div>
                   <h1 className="mt-2.5 max-w-[330px] text-[27px] font-bold leading-[1.12] tracking-[-0.035em] text-ink-primary">
@@ -502,7 +498,7 @@ function App() {
               className="tactile flex w-full items-center gap-4 rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-blue-300"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-blue text-white">
-                <GitBranch size={23} />
+                <TruthTraceMark size={24} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2 text-sm font-extrabold text-ink-primary">{t("truthTraceReport")} <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-700">{t("demo")}</span></span>
@@ -517,7 +513,7 @@ function App() {
               className="tactile flex w-full items-center gap-4 rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-brand-blue/40"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-npcigreen">
-                <BrainCircuit size={22} />
+                <PatternMemoryMark size={24} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-ink-primary">{t("patternMemory")}</span>
@@ -531,7 +527,7 @@ function App() {
               onClick={() => setActiveTab('accuracy')}
               className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700"><BarChart3 size={22}/></span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700"><AccuracyMark size={24}/></span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-ink-primary">{t("accuracyLab")} <span className="ml-1 text-[10px] text-violet-700">{t("new")}</span></span>
                 <span className="mt-1 block text-xs leading-relaxed text-ink-muted">{t("accuracyLabDescription")}</span>
@@ -551,7 +547,7 @@ function App() {
               className="tactile flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left shadow-card hover:border-brand-blue/30"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-pale text-brand-blue">
-                <Network size={22} />
+                <FundFlowMark size={24} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold text-ink-primary">{t("fundFlowNetwork")}</span>

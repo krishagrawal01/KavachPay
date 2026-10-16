@@ -7,7 +7,6 @@ import {
   ArrowRightLeft,
   CheckCircle2,
   ChevronDown,
-  GitBranch,
   FileText,
   Upload,
   Trash2,
@@ -23,6 +22,7 @@ import {
   type TraceInput,
   type TraceResult,
 } from '@/lib/truthTrace';
+import { TruthTraceMark } from '@/components/KavachIcons';
 import { useI18n } from '@/lib/i18n';
 
 type Fixture = {
@@ -593,7 +593,7 @@ export function TruthTraceLab({ initialInput }: { initialInput?: TraceInput }) {
 
       <section className="overflow-hidden rounded-2xl border border-border bg-white shadow-card">
         <button type="button" onClick={() => setShowEvidence(v => !v)} aria-expanded={showEvidence} className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-3 text-left">
-          <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><GitBranch size={17} className="text-blue-700" /> {t("fullEvidenceChain")} <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">{result.steps.length} steps</span></span>
+          <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><TruthTraceMark size={17} className="text-blue-700" /> {t("fullEvidenceChain")} <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">{result.steps.length} steps</span></span>
           <ChevronDown size={17} className={`text-slate-500 transition-transform ${showEvidence ? 'rotate-180' : ''}`} />
         </button>
         {showEvidence && <div className="border-t border-slate-100 p-3"><EvidenceChain result={result} /></div>}
@@ -679,7 +679,7 @@ export function TruthTraceCompact({ result }: { result: TraceResult }) {
   return (
     <section className={`rounded-2xl border p-4 shadow-card ${severe ? 'border-rose-200 bg-rose-50' : 'border-blue-100 bg-blue-50'}`}>
       <div className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><GitBranch size={17} className="text-blue-700" /> TruthTrace firewall</span>
+        <span className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><TruthTraceMark size={18} className="text-blue-700" /> TruthTrace firewall</span>
         <span className={`rounded-full px-2 py-1 text-[11px] font-extrabold ${severe ? 'bg-rose-100 text-rose-800' : 'bg-white text-blue-800'}`}>{severe ? 'HANDOFF BLOCKED' : 'EVIDENCE CHECK'}</span>
       </div>
       {result.signals.length ? result.signals.map(signal => (

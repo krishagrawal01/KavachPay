@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Languages } from 'lucide-react';
 import { LANGUAGES, useI18n } from '@/lib/i18n';
+import { KavachMark } from '@/components/KavachIcons';
 import {
   CheckCircle2,
   Download,
   Info,
   Share,
-  ShieldCheck,
   Volume2,
   VolumeX,
   X,
@@ -106,7 +106,7 @@ export function AppHeader({ muted, onToggleMute, onToggleJudgePanel }: AppHeader
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-surface px-4 py-2 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-pale text-brand-blue">
-            <ShieldCheck size={22} strokeWidth={2.2} />
+            <KavachMark size={25} />
           </div>
           <div className="min-w-0">
             <div className="text-[17px] font-extrabold leading-tight tracking-tight text-ink-primary">Kavach</div>
