@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import {
-  AlertTriangle,
   ArrowDownRight,
   ChevronDown,
-  CreditCard,
-  ShieldCheck,
-  Store,
 } from 'lucide-react';
 
 import type { ParsedUPI, RiskAssessment } from '@/lib/types';
 import { formatAmount, maskVpa } from '@/lib/upi';
+import { KavachMark, MerchantMark, PaymentCardMark, RiskAlertMark } from '@/components/KavachIcons';
 import { useI18n } from '@/lib/i18n';
 
 interface UPIDissectorProps {
@@ -54,9 +51,9 @@ export function UPIDissector({
         <div className="flex items-start gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80">
             {isCritical ? (
-              <AlertTriangle size={23} />
+              <RiskAlertMark size={24} />
             ) : (
-              <ShieldCheck size={23} />
+              <KavachMark size={24} />
             )}
           </div>
 
@@ -107,9 +104,9 @@ export function UPIDissector({
             }`}
           >
             {isMerchantCodePresent ? (
-              <Store size={22} />
+              <MerchantMark size={23} />
             ) : (
-              <CreditCard size={22} />
+              <PaymentCardMark size={23} />
             )}
           </div>
 
