@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { ShieldAlert, Volume2, VolumeX, RefreshCw, Clock, Phone, AlertOctagon } from 'lucide-react';
+import { Volume2, VolumeX, RefreshCw, Clock, Phone } from 'lucide-react';
+import { RiskAlertMark } from '@/components/KavachIcons';
 import type { ParsedUPI, RiskAssessment } from '@/lib/types';
 import { formatAmount } from '@/lib/upi';
 import { playWarningChime, triggerHaptics, speakWarning, stopSpeech, replaySpeech } from '@/lib/audio';
@@ -88,7 +89,7 @@ export function InterceptionShield({
       {/* Warning chime header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-2">
-          <ShieldAlert size={20} className="text-crimson-fraud animate-flash-crimson" />
+          <RiskAlertMark size={20} className="text-crimson-fraud animate-flash-crimson" />
           <span className="text-[10px] font-mono font-bold text-crimson-fraud tracking-wider uppercase animate-flash-crimson">
             Pre-PIN Interception Active
           </span>
@@ -114,7 +115,7 @@ export function InterceptionShield({
         {/* Main risk banner */}
         <div className="rounded-2xl border-2 border-crimson-fraud/50 bg-crimson-fraud/10 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <AlertOctagon size={16} className="text-crimson-fraud" />
+            <RiskAlertMark size={16} className="text-crimson-fraud" />
             <span className="text-[10px] font-mono font-bold text-crimson-fraud tracking-wider uppercase">Composite Risk: {assessment.compositeScore}% — BLOCKED</span>
           </div>
           <div className="space-y-1.5">
