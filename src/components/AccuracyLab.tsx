@@ -44,7 +44,7 @@ export function AccuracyLab({onBack}:{onBack:()=>void}) {
     setShowAll(true);
   };
   return <div className="space-y-4 pb-5">
-    <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-bold text-blue-700 hover:bg-blue-50"><ArrowLeft size={17}/> Back to tools</button>
+    <button type="button" onClick={onBack} className="inline-flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-bold text-blue-700 hover:bg-blue-50"><ArrowLeft size={17}/> {t("backToTools")}</button>
     <header className="rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-4 shadow-sm">
       <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-blue-700"><BarChart3 size={17}/> Accuracy Lab · Development benchmark</div>
       <h1 className="mt-1 text-2xl font-extrabold text-slate-900">{t('accuracyHeadline')}</h1>
